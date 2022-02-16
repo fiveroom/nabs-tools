@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "target": "ES5",
+        "module": "ESNext",
+        "lib": [
+            "ESNext"
+        ],
+
+        "outDir": "./types",
+
+        "declaration": true,
+        "emitDeclarationOnly": true,  /* 仅生成declaration */
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+
+        "useDefineForClassFields": true,
+        // "noEmit": true,
+
+        "noImplicitReturns": true
+    },
+    "exclude": [
+        "node_modules",
+        "**/__tests__/*",
+        "lib"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ]
+}
