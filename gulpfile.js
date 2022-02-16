@@ -8,9 +8,16 @@ const commonjs = require('@rollup/plugin-commonjs')
 const clean = (dir) => () => del(...dir);
 const nodeResolve = require('@rollup/plugin-node-resolve');
 
+const babelTs = ["@babel/preset-typescript"];
 
 const babelPresets = [
-    "@babel/preset-typescript", "@babel/preset-env"
+    ...babelTs,
+    [
+        "@babel/preset-env",
+        {
+            targets: "defaults, not ie 9, not ie_mob 11"
+        }
+    ]
 ]
 
 // {
@@ -45,7 +52,8 @@ const buildBrower = () => {
                 babel.babel({
                     babelHelpers: "bundled",
                     extensions: [".ts"],
-                    presets: babelPresets
+                    presets: babelPresets,
+                    targets: []
                 }),
                 rollupTerser.terser({
                     ecma: 2020
@@ -67,22 +75,20 @@ const buildBrower = () => {
 const buildESModule = () => {
     return rollup
         .rollup({
-            input: {
-                main: 'src/main.ts',
-                'string/trimAll': 'src/string/trimAll.ts'
-            },
+            input: 'src/main.ts',
             plugins: [
-                rollupTypescript({
-                    tsconfig: false
+                babel.babel({
+                    babelHelpers: "runtime",
+                    extensions: [".ts"],
+                    presets: [...babelTs, "@babel/preset-env"],
+                    plugins: ["@babel/plugin-transform-runtime"]
                 }),
-                // rollupTerser.terser()
             ],
         }).then(bundle => {
             return bundle.write({
                 format: 'esm',
-                // file: './dist/esm/nabsTools.esm.js',
-                dir: './dist/esm',
-                // entryFileNames: '[name].js'
+                file: './dist/nabsTools.esm.js',
+                sourcemap: true
             })
         })
 }
@@ -107,7 +113,7 @@ const buildTypes = () => {
 
 module.exports = {
     build: series(parallel(buildBrower, buildESModule)),
-    buildESModule: series(clean(['./dist/esm']), buildESModule),
-    buildBrower: series(clean(['./dist/brower']), buildBrower),
+    buildESModule: series(clean(['./dist/nabsTools.esm.js']), buildESModule),
+    buildBrower: series(clean(['./dist/nabsTools.brower.js']), buildBrower),
     buildTypes: series(clean(['./types']), buildTypes),
 };

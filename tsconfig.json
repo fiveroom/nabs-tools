@@ -18,7 +18,10 @@
         "useDefineForClassFields": true,
         // "noEmit": true,
 
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        "paths": {
+
+        }
     },
     "exclude": [
         "node_modules",

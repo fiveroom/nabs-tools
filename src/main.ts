@@ -61,3 +61,5 @@ export async function some(somePro: Promise<any>){
     let someStr =  await somePro.then((a) => a + 2);
     return someStr
 }
+
+
