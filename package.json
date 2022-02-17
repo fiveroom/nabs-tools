@@ -6,7 +6,8 @@
     "scripts": {
         "build:buildESModule": "gulp -f ./gulpfile.js buildESModule",
         "build:buildBrower": "gulp -f ./gulpfile.js buildBrower",
-        "build:declare": "gulp -f ./gulpfile.js buildTypes"
+        "build:declare": "gulp -f ./gulpfile.js buildTypes",
+        "build:integrate": "gulp -f ./gulpfile.js integrate"
     },
     "keywords": [],
     "author": "",
@@ -26,6 +27,7 @@
         "cz-conventional-changelog": "^3.3.0",
         "del": "^6.0.0",
         "gulp": "^4.0.2",
+        "gulp-inject": "^5.0.5",
         "rollup": "^2.67.2",
         "rollup-plugin-terser": "^7.0.2",
         "tslib": "^2.3.1"

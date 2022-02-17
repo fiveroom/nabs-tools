@@ -1,4 +1,5 @@
-const { series, parallel } = require('gulp');
+const { series, parallel, dest, src } = require('gulp');
+const vinyl = require('vinyl');
 const rollup = require('rollup');
 const rollupTypescript = require('@rollup/plugin-typescript');
 const rollupTerser = require("rollup-plugin-terser");
@@ -7,6 +8,10 @@ const babel = require('@rollup/plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs')
 const clean = (dir) => () => del(...dir);
 const nodeResolve = require('@rollup/plugin-node-resolve');
+const through = require('through2');
+
+const { Transform } = require('stream');
+const fs = require('fs');
 
 const babelTs = ["@babel/preset-typescript"];
 
@@ -98,22 +103,51 @@ const buildTypes = () => {
         input: './src/main.ts',
         plugins: [
             rollupTypescript({
-                tsconfig: './tsconfig.json'
+                tsconfig: './tsconfig.json',
             })
         ]
     }).then(bundle => {
         return bundle.write({
-            // format: 'esm',
-            // file: './dist/esm/nabsTools.esm.js',
             dir: './types',
-            // entryFileNames: '[name].js'
         })
     })
 }
+
+
+const integrate = () => {
+    // const r = fs.createWriteStream('./index.d.ts');
+    // r.on('pipe', (stream) => {
+    //     console.log('Something is piping into the writer.');
+    //     debugger
+    // })
+    return src('./types/**/*.d.ts', { base: './' }).pipe(((path) => {
+        let mergeFile = new vinyl({
+            path: path,
+            contents: Buffer.from('')
+        })
+        const end = Buffer.from('\n\n');
+        return  through.obj(function (file, enc, cb) {
+            if (file.isNull()) {
+                // 返回空文件
+                return cb(null, file);
+            }
+            let name = Buffer.from(`/*****${file.basename}****/\n`);
+            if (file.isBuffer()) {
+                mergeFile.contents = Buffer.concat([mergeFile.contents, name, file.contents, end]);
+            }
+            if (file.isStream()) {
+                // file.contents = file.contents.pipe(prefixStream(prefixText));
+            }
+            return cb(null, mergeFile);
+        });
+    })('./index.d.ts')).pipe(dest('./dist'))
+}
+
 
 module.exports = {
     build: series(parallel(buildBrower, buildESModule)),
     buildESModule: series(clean(['./dist/nabsTools.esm.js']), buildESModule),
     buildBrower: series(clean(['./dist/nabsTools.brower.js']), buildBrower),
     buildTypes: series(clean(['./types']), buildTypes),
+    integrate: series(clean(['./index.d.ts']), integrate),
 };
