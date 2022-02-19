@@ -88,7 +88,7 @@ const buildTypes = () => {
                 if (file.isNull()) {
                     return cb(null)
                 }
-                let name = Buffer.from(`/***** ${file.basename} ****/\n`);
+                let name = Buffer.from(`// /---------- ${file.basename} ----------/\n`);
                 if (file.isBuffer()) {
                     writeSteream.write(Buffer.concat([mergeFile.contents, name, file.contents, end]))
                 }
