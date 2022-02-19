@@ -1,3 +1,11 @@
+
+/**
+ * @example
+ * ```
+ * trimObjectDeep({a: ' dsaf  ', b: 'dddd ', c: ['f ']})
+ * // {a: 'dsaf', b: 'dddd', c: ['f']}
+ * ```
+ *  */
 export function trimObjectDeep(data: any): any {
     let v = data;
     const t = Object.prototype.toString.call(v);
