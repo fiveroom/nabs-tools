@@ -1,20 +1,19 @@
 const { series, parallel, dest, src } = require('gulp');
 const vinyl = require('vinyl');
 const rollup = require('rollup');
-const rollupTypescript = require('@rollup/plugin-typescript');
+// const rollupTypescript = require('@rollup/plugin-typescript');
 const rollupTerser = require("rollup-plugin-terser");
 const del = require('del');
 const babel = require('@rollup/plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs')
-const clean = (dir) => () => del(...dir);
-const nodeResolve = require('@rollup/plugin-node-resolve');
 const through = require('through2');
-
-const { Transform } = require('stream');
 const fs = require('fs');
+const { Transform } = require('stream');
+const ts = require('gulp-typescript');
 
+const clean = (dir) => () => del(...dir);
 const babelTs = ["@babel/preset-typescript"];
-
+var merge = require('merge2');
 const babelPresets = [
     ...babelTs,
     [
@@ -115,32 +114,36 @@ const buildTypes = () => {
 
 
 const integrate = () => {
-    // const r = fs.createWriteStream('./index.d.ts');
-    // r.on('pipe', (stream) => {
-    //     console.log('Something is piping into the writer.');
-    //     debugger
-    // })
-    return src('./types/**/*.d.ts', { base: './' }).pipe(((path) => {
-        let mergeFile = new vinyl({
-            path: path,
-            contents: Buffer.from('')
-        })
-        const end = Buffer.from('\n\n');
-        return  through.obj(function (file, enc, cb) {
-            if (file.isNull()) {
-                // 返回空文件
-                return cb(null, file);
-            }
-            let name = Buffer.from(`/*****${file.basename}****/\n`);
-            if (file.isBuffer()) {
-                mergeFile.contents = Buffer.concat([mergeFile.contents, name, file.contents, end]);
-            }
-            if (file.isStream()) {
-                // file.contents = file.contents.pipe(prefixStream(prefixText));
-            }
-            return cb(null, mergeFile);
-        });
-    })('./index.d.ts')).pipe(dest('./dist'))
+    return src('src/**/*.ts')
+        .pipe(ts({
+            declaration: true,
+            emitDeclarationOnly: true,
+        })).pipe(((path) => {
+            let mergeFile = new vinyl({
+                path: path,
+                contents: Buffer.from('')
+            })
+            const end = Buffer.from('\n\n');
+            let writeSteream = fs.createWriteStream(path);
+
+            return through.obj(function (file, enc, cb) {
+                if (file.isNull()) {
+                    // 返回空文件
+                    // return cb(null, file);
+                    return cb(null)
+                }
+                let name = Buffer.from(`/*****${file.basename}****/\n`);
+                if (file.isBuffer()) {
+                    writeSteream.write(Buffer.concat([mergeFile.contents, name, file.contents, end]))
+                    // mergeFile.contents = Buffer.concat([mergeFile.contents, name, file.contents, end]);
+                }
+                if (file.isStream()) {
+                    // file.contents = file.contents.pipe(prefixStream(prefixText));
+                }
+                cb(null)
+                // return cb(null, mergeFile);
+            });
+        })('./index.d.ts'))
 }
 
 
