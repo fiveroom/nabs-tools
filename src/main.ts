@@ -1,3 +1,6 @@
+export * from './tableHeadTool'
+export * from './download'
+
 export function isEquality(a: any, b: any, ...noProp: string[]) {
     if (a && b) {
         let typeA = Object.prototype.toString.call(a);
@@ -38,28 +41,4 @@ export function isEquality(a: any, b: any, ...noProp: string[]) {
     }
     return a == b;
 }
-
-export function promiseFunc(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(url);
-        }, 200);
-    });
-}
-
-export const test = (name: string) => {
-    if(name.includes('a')){
-        return 123;
-    }
-    console.log('object :>> ', 123);
-    let c = [1,2,3, [4, [5,6,7]]];
-    return c.flat()
-};
-
-
-export async function some(somePro: Promise<any>){
-    let someStr =  await somePro.then((a) => a + 2);
-    return someStr
-}
-
 
