@@ -5,9 +5,11 @@ const rollupTerser = require("rollup-plugin-terser");
 const del = require('del');
 const babel = require('@rollup/plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs')
+const nodeResolve = require('@rollup/plugin-node-resolve');
 const through = require('through2');
 const fs = require('fs');
 const ts = require('gulp-typescript');
+const { Buffer } = require('buffer')
 
 const clean = (dir) => () => del(...dir);
 const babelTs = ["@babel/preset-typescript"];
@@ -27,12 +29,16 @@ const buildBrower = () => {
         .rollup({
             input: './src/main.ts',
             plugins: [
-                commonjs(),
+                // commonjs(),
+                nodeResolve.nodeResolve({
+                    extensions: ['.ts']
+                }),
                 babel.babel({
                     babelHelpers: "bundled",
                     extensions: [".ts"],
                     presets: babelPresets,
-                    targets: []
+                    targets: [],
+                    configFile: false
                 }),
                 rollupTerser.terser({
                     ecma: 2020
@@ -56,11 +62,15 @@ const buildESModule = () => {
         .rollup({
             input: 'src/main.ts',
             plugins: [
+                nodeResolve.nodeResolve({
+                    extensions: ['.ts']
+                }),
                 babel.babel({
                     babelHelpers: "runtime",
                     extensions: [".ts"],
                     presets: [...babelTs, "@babel/preset-env"],
-                    plugins: ["@babel/plugin-transform-runtime"]
+                    plugins: ["@babel/plugin-transform-runtime"],
+                    configFile: false,
                 }),
             ],
         }).then(bundle => {
@@ -84,13 +94,14 @@ const buildTypes = () => {
             })
             const end = Buffer.from('\n\n');
             let writeSteream = fs.createWriteStream(path);
+            const regex = /\bexport\b\s+.*?\bfrom\b\s*("|'){1}[A-Za-z0-9_\.\/]*("|')\s*;?\n*/g;
             return through.obj(function (file, enc, cb) {
                 if (file.isNull()) {
                     return cb(null)
                 }
-                let name = Buffer.from(`// /---------- ${file.basename} ----------/\n`);
+                let name = Buffer.from(`// /---------- ${file.basename.replace(/(\.d)(\.ts)$/, "$2")} ----------/\n`);
                 if (file.isBuffer()) {
-                    writeSteream.write(Buffer.concat([mergeFile.contents, name, file.contents, end]))
+                    writeSteream.write(Buffer.concat([mergeFile.contents, name, Buffer.from(file.contents.toString().replace(regex, '')), end]))
                 }
                 if (file.isStream()) {
                 }
