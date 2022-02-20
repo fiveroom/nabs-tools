@@ -1,0 +1,6 @@
+# browser:
+*.brower.js
+*.map
+
+# Ignore all HTML files:
+*.html
