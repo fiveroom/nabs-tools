@@ -8,7 +8,8 @@
     "build:buildBrower": "gulp -f ./gulpfile.js buildBrower",
     "build:declare": "gulp -f ./gulpfile.js buildTypes",
     "build:integrate": "gulp -f ./gulpfile.js integrate",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "prettier": "prettier --write ./release"
   },
   "keywords": [],
   "author": "",
