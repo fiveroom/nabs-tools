@@ -4,25 +4,22 @@
         "target": "ES5",
         "module": "ESNext",
         "lib": [
-            "ESNext"
+            "ESNext",
+            "DOM"
         ],
-
         "outDir": "./types",
-
         "declaration": true,
-        "emitDeclarationOnly": true,  /* 仅生成declaration */
+        "emitDeclarationOnly": true, /* 仅生成declaration */
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
-
         "useDefineForClassFields": true,
         // "noEmit": true,
-
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        "esModuleInterop": true
     },
     "exclude": [
         "node_modules",
-        "**/__tests__/*",
         "lib"
     ],
     "include": [
