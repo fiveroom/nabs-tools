@@ -1,6 +1,6 @@
 
 export interface tableHead {
-    children: tableHead[],
+    children?: tableHead[],
     _colSpan?: number;
     _rowSpan?: number;
     _deep?: number;
