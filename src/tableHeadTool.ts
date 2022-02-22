@@ -100,7 +100,7 @@ interface getHeadRowMergeOption {
  * @param headArr
  * @param childrenProp
  */
-export function getHeadRowMerge(headArr: tableHead[], { startRow = 0, startCol = 0}: Partial<getHeadRowMergeOption>) {
+export function getHeadRowMerge(headArr: tableHead[], { startRow = 0, startCol = 0}: Partial<getHeadRowMergeOption> = {}) {
     let { maxRow, maxCol, bottomHeads} = handleSpan(headArr);
     let headRow: any[] = [],
         headMerage: number[][] =[];
@@ -119,7 +119,7 @@ export function getHeadRowMerge(headArr: tableHead[], { startRow = 0, startCol =
                         colIndex + head['_colSpan'] + startCol,
                     ]);
                 }
-                currRow[colIndex + startCol] = head.name;
+                currRow[colIndex + startCol] = head.name || '';
                 handleHeadRow(head.children, rowIndex + 1, colIndex);
                 colIndex += head._colSpan;
             });
