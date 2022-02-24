@@ -39,7 +39,7 @@ export function delTreeNoneNode(ids: Set<string>, tree: any[], ...cfg: string[])
         for (let i = tree.length - 1; i >=0; i--) {
             let data = tree[i];
             let childHas = delTreeNoneNode.apply(null, [ids, data[cfg[1] || 'children'], ...cfg]);
-            if(!childHas && !ids.has(data[cfg[0] || 'guid'])){
+            if(!childHas && !ids.has(data[cfg[0] || 'id'])){
                 tree.splice(i, 1);
             } else {
                 stu = true;
@@ -60,8 +60,8 @@ interface optionLeafPropCfg {field?: string; children?: string, addSearch?: stri
  * @param propCfg
  * @returns
  */
-export function getOptionLeaf(arr, excludeProp: string[] = [], propCfg: optionLeafPropCfg = {}) {
-    let props:optionLeafPropCfg = Object.assign({field: 'Field', children: 'children', addSearch: 'addSearch'}, propCfg || {});
+export function getOptionLeaf(arr: Object[], excludeProp: string[] = [], propCfg: optionLeafPropCfg = {}) {
+    let props:optionLeafPropCfg = Object.assign({field: 'Field', children: 'children', addSearch: 'addSearch'}, propCfg);
     let res = [];
     const getChild = function(){
         for (let i = 0; i < arr.length; i++) {
@@ -172,7 +172,6 @@ export function listToTree(
     }
     return {data: res, deep}
 }
-
 
 
 /**
