@@ -6,10 +6,11 @@
   "scripts": {
     "build:buildESModule": "gulp -f ./gulpfile.js buildESModule",
     "build:buildBrower": "gulp -f ./gulpfile.js buildBrower",
-    "build:declare": "gulp -f ./gulpfile.js buildTypes",
-    "build:integrate": "gulp -f ./gulpfile.js integrate",
+    "build:buildTypes": "gulp -f ./gulpfile.js buildTypes",
+    "build:buildPkg": "gulp -f ./gulpfile.js buildPkg",
     "test": "jest --config jest.config.js",
-    "prettier": "prettier --write ./release"
+    "prettier": "prettier --write ./release",
+    "dev": "vite"
   },
   "keywords": [],
   "author": "",
@@ -21,22 +22,28 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
+    "@faker-js/faker": "^6.0.0-alpha.7",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@types/gulp": "^4.0.9",
     "@types/jest": "^27.4.0",
+    "@types/react": "^17.0.39",
+    "@vitejs/plugin-react": "^1.2.0",
     "cz-conventional-changelog": "^3.3.0",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^27.5.1",
     "prettier": "2.5.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rollup": "^2.67.2",
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^27.1.3",
     "tslib": "^2.3.1",
-    "typedoc": "^0.22.12"
+    "typedoc": "^0.22.12",
+    "vite": "^2.8.4"
   },
   "config": {
     "commitizen": {

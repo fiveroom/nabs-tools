@@ -16,13 +16,17 @@
         "useDefineForClassFields": true,
         // "noEmit": true,
         "noImplicitReturns": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "jsx": "react-jsx",
+        "paths": {
+            "lib/*": ["./src/*"]
+        },
     },
     "exclude": [
-        "node_modules",
-        "lib"
+        "node_modules"
     ],
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "./html"
     ]
 }
