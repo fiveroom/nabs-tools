@@ -44,6 +44,7 @@ const buildBrower = () => {
                     ecma: 2020
                 })
             ],
+            external: 'exceljs'
         })
         .then((bundle) => {
             return bundle.write(
@@ -52,6 +53,9 @@ const buildBrower = () => {
                     name: 'nabsTools',
                     file: './release/index.brower.js',
                     sourcemap: true,
+                    globals: {
+                        'exceljs': 'ExcelJS'
+                    }
                 }
             );
         });
@@ -72,7 +76,9 @@ const buildESModule = () => {
                     plugins: ["@babel/plugin-transform-runtime"],
                     configFile: false,
                 }),
+                commonjs()
             ],
+            external: ['exceljs']
         }).then(bundle => {
             return bundle.write({
                 format: 'esm',
@@ -83,6 +89,7 @@ const buildESModule = () => {
 }
 
 const buildTypes = () => {
+
     return src('src/**/*.ts')
         .pipe(ts({
             declaration: true,
@@ -115,10 +122,14 @@ const pkg = () => {
     return read.pipe(fs.createWriteStream('./release/package.json'))
 }
 
+const readme = () => {
+    return src('./README.md').pipe(dest('./release'))
+}
 
 module.exports = {
     build: series(clean(['./release']), parallel(buildBrower, buildESModule), parallel(buildTypes, pkg)),
     buildESModule: series(clean(['./release/index.esm.js']), buildESModule),
     buildBrower: series(clean(['./release/index.brower.js']), buildBrower),
-    buildTypes: series(clean(['./release/index.d.ts']), buildTypes)
+    buildTypes: series(clean(['./release/index.d.ts']), buildTypes),
+    buildPkg: parallel(pkg, readme)
 };

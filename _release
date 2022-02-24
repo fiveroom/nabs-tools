@@ -1,6 +1,6 @@
 {
     "name": "@fiveroom/js-tools",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "index.js",
     "exports": {
@@ -11,5 +11,8 @@
     "types": "./index.d.ts",
     "browser": "./index.broweb.js",
     "homepage": "https://github.com/fiveroom/nabs-tools",
-    "sideEffects": true
+    "sideEffects": true,
+    "dependencies": {
+        "exceljs": "^4.3.0"
+    }
 }
