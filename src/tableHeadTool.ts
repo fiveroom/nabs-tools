@@ -4,14 +4,12 @@ export interface tableHead {
     _colSpan?: number;
     _rowSpan?: number;
     _deep?: number;
-
     [prop: string]: any;
-
 }
 
-export interface handleColSpanOption {
+export interface handleColSpanOption<T> {
     deep: number;
-    callBack: (head: tableHead) => void;
+    callBack: (head: T) => void;
 }
 
 /**
@@ -20,7 +18,7 @@ export interface handleColSpanOption {
  * @param param1
  * @returns
  */
-export function handleColSpan(headArr: tableHead[], { deep = 0, callBack = null }: Partial<handleColSpanOption> = {}): number {
+export function handleColSpan<T extends tableHead>(headArr: T[], { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {}): number {
     if (Array.isArray(headArr)) {
         deep++;
         return headArr.reduce((prev, curr) => {
@@ -70,9 +68,9 @@ export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
  * @param param1
  * @returns
  */
-export function handleSpan(headArr: tableHead[]) {
-    let maxDeep = 0, bottomHeads: tableHead[] = [];
-    handleColSpan(headArr, {
+export function handleSpan<T extends tableHead>(headArr: T[]) {
+    let maxDeep = 0, bottomHeads: T[] = [];
+    handleColSpan<T>(headArr, {
         callBack: (head) => {
             if (!Array.isArray(head.children) || !head.children.length) {
                 maxDeep = Math.max(maxDeep, head['_deep']);
@@ -88,9 +86,18 @@ export function handleSpan(headArr: tableHead[]) {
     }
 }
 
-interface getHeadRowMergeOption {
+export interface getHeadRowMergeOption {
     startRow: number;
     startCol: number;
+    label: string;
+}
+
+export interface headInfo<T> {
+    headRow: any[][];
+    headMerage: number[][];
+    maxRow: number;
+    maxCol: number;
+    bottomHeads: T[];
 }
 
 /**
@@ -100,8 +107,8 @@ interface getHeadRowMergeOption {
  * @param headArr
  * @param childrenProp
  */
-export function getHeadRowMerge(headArr: tableHead[], { startRow = 0, startCol = 0}: Partial<getHeadRowMergeOption> = {}) {
-    let { maxRow, maxCol, bottomHeads} = handleSpan(headArr);
+export function getHeadRowMerge<T extends tableHead>(headArr: T[], { startRow = 0, startCol = 0, label = 'label'}: Partial<getHeadRowMergeOption> = {}): headInfo<T> {
+    let { maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
     let headRow: any[] = [],
         headMerage: number[][] =[];
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
@@ -119,7 +126,7 @@ export function getHeadRowMerge(headArr: tableHead[], { startRow = 0, startCol =
                         colIndex + head['_colSpan'] + startCol,
                     ]);
                 }
-                currRow[colIndex + startCol] = head.name || '';
+                currRow[colIndex + startCol] = head['label'] || '';
                 handleHeadRow(head.children, rowIndex + 1, colIndex);
                 colIndex += head._colSpan;
             });

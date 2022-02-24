@@ -17,7 +17,7 @@ const createHeadArr: () => tableHead[] = () => {
         },
         {
             prop: 'p9',
-            children: [{ prop: 'p10' }, { prop: 'p11', children: [{ prop: 'p12', name: 'p12' }] }],
+            children: [{ prop: 'p10' }, { prop: 'p11', children: [{ prop: 'p12', label: 'p12' }] }],
         },
     ];
 }
