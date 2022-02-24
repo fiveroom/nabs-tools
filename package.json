@@ -47,6 +47,7 @@
   "dependencies": {
     "@babel/runtime": "^7.17.2",
     "@babel/runtime-corejs3": "^7.17.2",
-    "core-js": "^3.21.0"
+    "core-js": "^3.21.0",
+    "exceljs": "^4.3.0"
   }
 }
