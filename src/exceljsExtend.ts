@@ -76,8 +76,8 @@ export class ExportEx {
 
     addSheet(
         name: string,
-        headArr: xlsxHeadArr,
-        bodyData: Object[] = []
+        headArr?: xlsxHeadArr,
+        bodyData?: Object[]
     ): Worksheet {
         let worksheet = this.workbook.addWorksheet(name);
         let headInfo: xlsxHeadInfo = {
@@ -90,7 +90,7 @@ export class ExportEx {
         this.sheetMap.set(worksheet, headInfo);
         if (headArr && headArr.length) {
             this.addheads(worksheet, headArr);
-            this.addBodyData(bodyData, worksheet, headInfo.bottomHeads);
+            this.addBodyData(bodyData || [], worksheet, headInfo.bottomHeads);
         }
         return worksheet;
     }
@@ -130,8 +130,8 @@ export class ExportEx {
                 });
                 sheet.getRow(r + 1 + o.startRow).height = ExportEx.headHeight;
             });
-
         }
+        return headInfo
     }
 
     addBodyData(
