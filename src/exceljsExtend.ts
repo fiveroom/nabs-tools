@@ -188,7 +188,7 @@ export class ExportEx {
         });
     }
 
-    dealDataFormat(row: Object, head: Partial<xlsxHead>): any {
+    private dealDataFormat(row: Object, head: Partial<xlsxHead>): any {
         if (head.prop && row && row instanceof Object) {
             return head.format ? head.format(row[head.prop]) : row[head.prop];
         }
