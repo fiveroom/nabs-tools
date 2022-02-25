@@ -131,7 +131,7 @@ const readme = () => {
 }
 
 module.exports = {
-    build: series(clean(['./release']), parallel(buildBrower, buildESModule, pkg, readme), buildTypes),
+    build: series(clean(['./release']), parallel(buildBrower, buildESModule, readme), buildTypes, pkg),
     buildESModule: series(clean(['./release/index.esm.js']), buildESModule),
     buildBrower: series(clean(['./release/index.brower.js']), buildBrower),
     buildTypes: series(clean(['./release/index.d.ts']), buildTypes),
