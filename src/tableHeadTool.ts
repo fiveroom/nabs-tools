@@ -112,7 +112,7 @@ export function getHeadRowMerge<T extends tableHead>(headArr: T[], { startRow = 
     let headRow: any[] = [],
         headMerage: number[][] =[];
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
-        if (Array.isArray(headArr)) {
+        if (Array.isArray(headArr) && headArr.length) {
             let currRow = (headRow[rowIndex] ??= Array.from({
                 length: maxCol + startCol,
             }).fill(''));

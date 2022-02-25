@@ -69,9 +69,11 @@ export class ExportEx {
     sheetMap: Map<Worksheet, xlsxHeadInfo> = new Map();
     static defaultHeadStyle: Partial<Style> = DEFAULT_HEAD_STYLE;
     static headHeight = 30;
+    widthRadio: number;
 
-    constructor() {
+    constructor(widthRadio: number = 1) {
         this.workbook = new Workbook();
+        this.widthRadio = widthRadio;
     }
 
     addSheet(
@@ -151,7 +153,7 @@ export class ExportEx {
         );
         propHeads.forEach(item => {
             columns.push({
-                width: item.width,
+                width: item.width && item.width * this.widthRadio,
                 style: {},
                 key: item.prop,
                 numFmt: item.numFmt,
