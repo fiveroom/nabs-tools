@@ -72,7 +72,11 @@ const buildESModule = () => {
                 babel.babel({
                     babelHelpers: "runtime",
                     extensions: [".ts"],
-                    presets: [...babelTs, "@babel/preset-env"],
+                    presets: [...babelTs, ["@babel/preset-env", {
+                        targets: {
+                            "chrome": "60" // es5
+                        }
+                    }]],
                     plugins: ["@babel/plugin-transform-runtime"],
                     configFile: false,
                 }),
