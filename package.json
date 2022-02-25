@@ -8,9 +8,11 @@
     "build:buildBrower": "gulp -f ./gulpfile.js buildBrower",
     "build:buildTypes": "gulp -f ./gulpfile.js buildTypes",
     "build:buildPkg": "gulp -f ./gulpfile.js buildPkg",
+    "build": "gulp -f ./gulpfile.js build",
     "test": "jest --config jest.config.js",
     "prettier": "prettier --write ./release",
-    "dev": "vite"
+    "dev": "vite",
+    "build:html": "vite build"
   },
   "keywords": [],
   "author": "",
