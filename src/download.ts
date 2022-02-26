@@ -1,5 +1,8 @@
-export function downloadBuffer(blobParts: BlobPart[], fileName: string = 'file'): Promise<any> {
-    return new Promise<any>((rsolve) => {
+export function downloadBuffer(
+    blobParts: BlobPart[],
+    fileName: string = 'file'
+): Promise<any> {
+    return new Promise<any>(rsolve => {
         let blob = new Blob(blobParts);
         const a = document.createElement('a');
         a.setAttribute('style', 'display: none;');
@@ -15,5 +18,5 @@ export function downloadBuffer(blobParts: BlobPart[], fileName: string = 'file')
             a.remove();
             rsolve(undefined);
         }, 0);
-    })
+    });
 }

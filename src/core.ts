@@ -1,3 +1,12 @@
+/**
+ *
+ * 深度对象判断
+ *
+ * @param a
+ * @param b
+ * @param noProp
+ * @returns
+ */
 export function isEquality(a: any, b: any, ...noProp: string[]) {
     if (a && b) {
         let typeA = Object.prototype.toString.call(a);
@@ -5,12 +14,8 @@ export function isEquality(a: any, b: any, ...noProp: string[]) {
         if (typeA == typeB) {
             switch (typeA) {
                 case '[object Object]':
-                    let keyA = Object.keys(a).filter(
-                        (i) => !noProp.includes(i)
-                    );
-                    let keyB = Object.keys(b).filter(
-                        (i) => !noProp.includes(i)
-                    );
+                    let keyA = Object.keys(a).filter(i => !noProp.includes(i));
+                    let keyB = Object.keys(b).filter(i => !noProp.includes(i));
                     if (keyA.length != keyB.length) {
                         return false;
                     }
@@ -39,16 +44,28 @@ export function isEquality(a: any, b: any, ...noProp: string[]) {
     return a == b;
 }
 
-
-export function getDeepObj(data: any, d: string, split = '.'){
-    if(!data || !d) return undefined
+/**
+ * 链式获取对象
+ * @example
+ * ```ts
+ * let o = {a: {b: {c: 123}}}
+ * getDeepObj(o, 'a.b.c') // 123
+ * ```
+ *
+ * @param data
+ * @param d
+ * @param split
+ * @returns
+ */
+export function getDeepObj(data: any, d: string, split = '.') {
+    if (!data || !d) return undefined;
     let dArr = d.split(split);
     let r = data;
-    for(let i = 0; i < dArr.length; i++){
-        r = r[dArr[i]]
-        if(!r){
-            return r
+    for (let i = 0; i < dArr.length; i++) {
+        r = r[dArr[i]];
+        if (!r) {
+            return r;
         }
     }
-    return r
+    return r;
 }

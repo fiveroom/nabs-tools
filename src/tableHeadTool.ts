@@ -1,6 +1,5 @@
-
 export interface tableHead {
-    children?: tableHead[],
+    children?: tableHead[];
     _colSpan?: number;
     _rowSpan?: number;
     _deep?: number;
@@ -18,7 +17,10 @@ export interface handleColSpanOption<T> {
  * @param param1
  * @returns
  */
-export function handleColSpan<T extends tableHead>(headArr: T[], { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {}): number {
+export function handleColSpan<T extends tableHead>(
+    headArr: T[],
+    { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {}
+): number {
     if (Array.isArray(headArr)) {
         deep++;
         return headArr.reduce((prev, curr) => {
@@ -42,7 +44,6 @@ export function handleColSpan<T extends tableHead>(headArr: T[], { deep = 0, cal
     return 0;
 }
 
-
 /**
  * 计算表格数的行合并
  *
@@ -50,9 +51,8 @@ export function handleColSpan<T extends tableHead>(headArr: T[], { deep = 0, cal
  * @param param1
  */
 export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
-    headArr.forEach((head) => {
-        const hasChild =
-            Array.isArray(head.children) && head.children.length;
+    headArr.forEach(head => {
+        const hasChild = Array.isArray(head.children) && head.children.length;
         if (hasChild) handleRowSpan(head.children, maxDeep);
         Object.defineProperty(head, '_rowSpan', {
             writable: true,
@@ -69,9 +69,10 @@ export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
  * @returns
  */
 export function handleSpan<T extends tableHead>(headArr: T[]) {
-    let maxDeep = 0, bottomHeads: T[] = [];
+    let maxDeep = 0,
+        bottomHeads: T[] = [];
     handleColSpan<T>(headArr, {
-        callBack: (head) => {
+        callBack: head => {
             if (!Array.isArray(head.children) || !head.children.length) {
                 maxDeep = Math.max(maxDeep, head['_deep']);
                 bottomHeads.push(head);
@@ -83,7 +84,7 @@ export function handleSpan<T extends tableHead>(headArr: T[]) {
         bottomHeads,
         maxRow: maxDeep,
         maxCol: bottomHeads.length,
-    }
+    };
 }
 
 export interface getHeadRowMergeOption {
@@ -107,16 +108,23 @@ export interface headInfo<T> {
  * @param headArr
  * @param childrenProp
  */
-export function getHeadRowMerge<T extends tableHead>(headArr: T[], { startRow = 0, startCol = 0, label = 'label'}: Partial<getHeadRowMergeOption> = {}): headInfo<T> {
-    let { maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
+export function getHeadRowMerge<T extends tableHead>(
+    headArr: T[],
+    {
+        startRow = 0,
+        startCol = 0,
+        label = 'label',
+    }: Partial<getHeadRowMergeOption> = {}
+): headInfo<T> {
+    let { maxRow, maxCol, bottomHeads } = handleSpan<T>(headArr);
     let headRow: any[] = [],
-        headMerage: number[][] =[];
+        headMerage: number[][] = [];
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
         if (Array.isArray(headArr) && headArr.length) {
             let currRow = (headRow[rowIndex] ??= Array.from({
                 length: maxCol + startCol,
             }).fill(''));
-            headArr.forEach((head) => {
+            headArr.forEach(head => {
                 if (head['_colSpan'] != 1 || head['_rowSpan'] != 1) {
                     // 开始行 开始列 结束行 结束列
                     headMerage.push([
@@ -138,6 +146,6 @@ export function getHeadRowMerge<T extends tableHead>(headArr: T[], { startRow = 
         headMerage,
         maxRow,
         maxCol,
-        bottomHeads
-    }
+        bottomHeads,
+    };
 }

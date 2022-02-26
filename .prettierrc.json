@@ -2,6 +2,26 @@
     "tabWidth": 4,
     "useTabs": false,
     "semi": true,
-    "bracketSpacing": false,
-    "arrowParens": "avoid"
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "overrides": [
+        {
+            "files": "*.d.ts",
+            "options": {
+                "parser": "typescript"
+            }
+        },
+        {
+            "files": "*.js",
+            "options": {
+                "parser": "babel-flow"
+            }
+        },
+        {
+            "files": "*.md",
+            "options": {
+                "parser": "markdown"
+            }
+        }
+    ]
 }

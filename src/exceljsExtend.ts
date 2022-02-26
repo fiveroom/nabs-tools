@@ -13,7 +13,7 @@ import {
     headInfo,
     getHeadRowMergeOption,
 } from './tableHeadTool';
-import {downloadBuffer} from './download';
+import { downloadBuffer } from './download';
 
 export interface xlsxHead extends tableHead {
     children: Partial<xlsxHead>[];
@@ -33,10 +33,10 @@ export interface xlsxHead extends tableHead {
 export type xlsxHeadArr = Array<Partial<xlsxHead>>;
 
 export const DEFAULT_HEAD_BORDER_STYLE: Partial<Borders> = {
-    top: {style: 'thin', color: {argb: '000000'}},
-    left: {style: 'thin', color: {argb: '000000'}},
-    bottom: {style: 'thin', color: {argb: '000000'}},
-    right: {style: 'thin', color: {argb: '000000'}},
+    top: { style: 'thin', color: { argb: '000000' } },
+    left: { style: 'thin', color: { argb: '000000' } },
+    bottom: { style: 'thin', color: { argb: '000000' } },
+    right: { style: 'thin', color: { argb: '000000' } },
 };
 
 export const DEFAULT_HEAD_FONT_STYLE: Partial<Font> = {
@@ -53,7 +53,7 @@ export const DEFAULT_HEAD_STYLE: Partial<Style> = {
     fill: {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'ffd8e9fe'},
+        fgColor: { argb: 'ffd8e9fe' },
         // #0000ff
         // bgColor:{argb:'FF0000FF'}
     },
@@ -115,7 +115,7 @@ export class ExportEx {
         if (headInfo) {
             let o = Object.assign(
                 {},
-                {startRow: sheet.rowCount, startCol: 0},
+                { startRow: sheet.rowCount, startCol: 0 },
                 option
             );
             let headInfo_ = getHeadRowMerge<Partial<xlsxHead>>(headArr, o);
@@ -133,7 +133,7 @@ export class ExportEx {
                 sheet.getRow(r + 1 + o.startRow).height = ExportEx.headHeight;
             });
         }
-        return headInfo
+        return headInfo;
     }
 
     addBodyData(
@@ -163,14 +163,14 @@ export class ExportEx {
                 alignment: Object.assign({}, DEFAULT_HEAD_ALIGNMENT_STYLE, {
                     horizontal: item.align,
                 }),
-                font: {size: item.fSize},
+                font: { size: item.fSize },
                 fill: {
                     type: 'pattern',
                     pattern: 'solid',
-                    fgColor: {argb: 'FFFFFFFF'},
+                    fgColor: { argb: 'FFFFFFFF' },
                 },
                 numFmt: item.numFmt,
-                protection: {locked: false},
+                protection: { locked: false },
             });
         });
         worksheet.columns = columns;
@@ -196,7 +196,7 @@ export class ExportEx {
     }
 
     downLoad(fileName?: string) {
-        this.sheetMap.forEach(({headMerage}, sheet) => {
+        this.sheetMap.forEach(({ headMerage }, sheet) => {
             headMerage.forEach(merge => sheet.mergeCells.apply(sheet, merge));
         });
         return this.workbook.xlsx.writeBuffer().then(buffer => {
