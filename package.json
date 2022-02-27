@@ -10,7 +10,7 @@
         "build:html": "vite build",
         "build": "gulp build",
         "postbuild": "prettier --write ./release",
-        "prepublishOnly": "npm run build & gulp buildDesc"
+        "prepublishOnly": "gulp buildDesc"
     },
     "keywords": [],
     "author": "",
