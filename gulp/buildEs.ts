@@ -1,12 +1,13 @@
-const rollup = require("rollup");
-const nodeResolve = require("@rollup/plugin-node-resolve");
-const babel = require("@rollup/plugin-babel");
-const handleImport = require("./tools/gulpHandleImport");
-const concat = require("gulp-concat");
-const { dest, src } = require("gulp");
-const ts = require("gulp-typescript");
-const commonjs = require("@rollup/plugin-commonjs");
-const { outPath, srcPath } = require("./config");
+import * as rollup from 'rollup';
+import * as nodeResolve from "@rollup/plugin-node-resolve"
+import * as babel from '@rollup/plugin-babel'
+import { gulpHandleImport } from './tools/gulpHandleImport'
+import concat from 'gulp-concat'
+import {dest, src, parallel} from 'gulp'
+import ts from "gulp-typescript"
+import commonjs from "@rollup/plugin-commonjs"
+// const commonjs = require("@rollup/plugin-commonjs");
+import { outPath, srcPath } from './config'
 
 const buildES = () => {
     return rollup
@@ -55,11 +56,8 @@ const buildTypes = () => {
             })
         )
         .pipe(concat("index.d.ts"))
-        .pipe(handleImport())
+        .pipe(gulpHandleImport())
         .pipe(dest(outPath()));
 };
 
-module.exports = {
-    buildES,
-    buildTypes,
-};
+export default parallel(buildES, buildTypes)

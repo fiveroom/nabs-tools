@@ -1,8 +1,9 @@
-const { resolve } = require("path");
-const replace = require("gulp-replace");
-const { src, dest, parallel } = require("gulp");
-const rename = require("gulp-rename");
-const { outPath } = require("../config");
+import { resolve } from 'path'
+import replace from 'gulp-replace'
+import { src, dest, parallel } from 'gulp'
+import rename from 'gulp-rename'
+import { outPath, srcPath } from '../config'
+
 
 const buildPkg = () => {
     let cwd = process.cwd();
@@ -18,6 +19,5 @@ const moveReadme = () => {
     return src(resolve(cwd, "README.md")).pipe(dest(outPath()));
 };
 
-module.exports = {
-    buildDesc: parallel(buildPkg, moveReadme),
-};
+export default parallel(buildPkg, moveReadme)
+

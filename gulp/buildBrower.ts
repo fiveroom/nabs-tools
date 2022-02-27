@@ -1,8 +1,9 @@
-const rollup = require("rollup");
-const nodeResolve = require("@rollup/plugin-node-resolve");
-const babel = require("@rollup/plugin-babel");
-const rollupTerser = require("rollup-plugin-terser");
-const { outPath, srcPath } = require("./config");
+import * as nodeResolve from "@rollup/plugin-node-resolve"
+import * as babel from '@rollup/plugin-babel'
+import * as rollup from 'rollup'
+import rollupTerser from 'rollup-plugin-terser'
+import { outPath, srcPath } from './config'
+
 
 const buildBrower = () => {
     return rollup
@@ -25,7 +26,6 @@ const buildBrower = () => {
                             },
                         ],
                     ],
-                    targets: [],
                     configFile: false,
                 }),
                 rollupTerser.terser({
@@ -47,6 +47,4 @@ const buildBrower = () => {
         });
 };
 
-module.exports = {
-    buildBrower,
-};
+export default buildBrower

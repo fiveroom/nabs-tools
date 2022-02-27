@@ -1,6 +1,7 @@
-const through = require("through2");
-const { Buffer } = require("buffer");
-const { EOL } = require("os");
+import through from 'through2'
+import { Buffer } from 'buffer'
+import { EOL } from 'os'
+import stream from 'stream'
 
 function delExport(str) {
     const regexInlineImport =
@@ -23,7 +24,7 @@ function gulpHandleImport() {
     let mergeFile,
         thridParts = "";
 
-    const dealInlineDependent = function (file, enc, cb) {
+    const dealInlineDependent = function (this: stream.Transform, file, enc, cb) {
         if (file.isNull()) {
             cb();
             return;
@@ -57,7 +58,7 @@ function gulpHandleImport() {
         cb();
     };
 
-    const endStream = function (cb) {
+    const endStream = function (this: stream.Transform, cb) {
         mergeFile.contents = Buffer.concat([
             Buffer.from(thridParts ? thridParts + EOL + EOL : thridParts),
             mergeFile.contents,
@@ -71,4 +72,6 @@ function gulpHandleImport() {
 }
 
 // 导出插件主函数
-module.exports = gulpHandleImport;
+export {
+    gulpHandleImport
+}
