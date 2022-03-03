@@ -3,6 +3,8 @@ export interface tableHead {
     _colSpan?: number;
     _rowSpan?: number;
     _deep?: number;
+    _isRight? :boolean;
+    _isLeft?: boolean;
     [prop: string]: any;
 }
 
@@ -60,6 +62,24 @@ export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
         });
     });
 }
+
+
+/**
+ * 寻找右边边界元素
+ *
+ * @param headArr
+ */
+export function handleBorderRight(headArr: tableHead[]) {
+    if(Array.isArray(headArr) && headArr.length > 0){
+        let last = headArr[headArr.length - 1];
+        Object.defineProperty(last, '_isRight', {
+            writable: true,
+            value: true
+        });
+        handleBorderRight(last.children);
+    }
+}
+
 
 /**
  * 计算表格头部的行和列合并
