@@ -3,6 +3,7 @@ import {
     handleRowSpan,
     tableHead,
     getHeadRowMerge,
+    handleBorderRight,
 } from '../src/tableHeadTool';
 
 const createHeadArr: () => tableHead[] = () => {
@@ -72,4 +73,14 @@ describe('得到 exceljs 格式', () => {
     test('行数据', () => {
         expect(headRow).toEqual(expect.arrayContaining(rowsTest));
     });
+});
+
+test('寻找右边界', () => {
+    let header = createHeadArr();
+    handleBorderRight(header);
+    expect([
+        header[header.length - 1]._isRight,
+        header[header.length - 1].children[1]._isRight,
+        header[header.length - 1].children[1].children[0]._isRight
+    ]).toEqual([true, true, true])
 });
