@@ -1,12 +1,13 @@
 import { render } from "react-dom";
 import { useState } from "react";
 import { Workbook } from "exceljs";
-import { getHeadRowMerge } from "lib/tableHeadTool";
+import { getHeadRowMerge, handleBorderRight, handleColSpan, handleRowSpan, tableHead } from "lib/tableHeadTool";
 import { xlsxHeadArr } from "lib/exceljsExtend";
 import { ExportEx } from "lib/exceljsExtend";
 import { faker } from "@faker-js/faker";
 import { headsXNGD, testData } from "./mock/data01";
 import { downloadBuffer } from 'lib/download';
+
 
 function App() {
     const [count, setCount] = useState(0);
@@ -148,14 +149,60 @@ function App() {
         });
     }
 
+    const colSpanTest = () => {
+        const headArr: tableHead[] = [
+            {
+                label: '1',
+                show: true,
+                children: [
+                    {
+                        show: true,
+                        label: '1-1'
+                    },
+                    {
+                        show: false,
+                        label: '1-2'
+                    }
+                ]
+            },
+            {
+                label: '2',
+                show: true,
+                rowSpan: 2
+            },
+            {
+                label: '3',
+                show: false,
+                children: [
+                    {
+                        show: true,
+                        label: '3-1'
+                    }
+                ]
+            }
+        ];
+        let maxDeep = 0;
+        handleColSpan(headArr, {
+            callBack: (head, hasChild) => {
+                if (!hasChild) {
+                    maxDeep = Math.max(maxDeep, head._deep);
+                }
+            },
+        });
+        handleRowSpan(headArr, maxDeep);
+        handleBorderRight(headArr)
+        console.log(headArr);
+    }
+
     return (
         <div>
             <button onClick={exportUseTool}>使用工具导出</button>
             <button onClick={exportHeadTop}>添加头部行信息</button>
             <button onClick={exportHeadTopD}>测试</button>
             <button onClick={exportTree}>导出树表格</button>
+            <button onClick={colSpanTest}>测试colSpan</button>
         </div>
     );
 }
 
-render(<App />, document.getElementById("app"));
+render(<App/>, document.getElementById("app"));
