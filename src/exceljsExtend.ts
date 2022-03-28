@@ -68,8 +68,11 @@ export class ExportEx {
     workbook: Workbook;
     sheetMap: Map<Worksheet, xlsxHeadInfo> = new Map();
     static defaultHeadStyle: Partial<Style> = DEFAULT_HEAD_STYLE;
-    static headHeight = 30;
+    headHeight = 30;
     widthRadio: number;
+    bodyHeight = 30;
+    setBodyHeight: (rowIndex: number, row: any) => number;
+    setHeadHeight: (rowIndex: number, row: any) => number;
 
     constructor(widthRadio: number = 1) {
         this.workbook = new Workbook();
@@ -130,7 +133,7 @@ export class ExportEx {
                         ).style = ExportEx.defaultHeadStyle;
                     }
                 });
-                sheet.getRow(r + 1 + o.startRow).height = ExportEx.headHeight;
+                sheet.getRow(r + 1 + o.startRow).height = this.setHeadHeight ? this.setHeadHeight(r + 1 + o.startRow, rows) : this.headHeight;
             });
         }
         return headInfo;
@@ -180,20 +183,22 @@ export class ExportEx {
                     rowInd + 1 + option.startRow,
                     colInd + 1 + option.startCol
                 );
-                cell.value = this.dealDataFormat(row, head);
+                cell.value = ExportEx.dealDataFormat(row, head);
                 cell.style = head.bodyStyleFormat
                     ? head.bodyStyleFormat(bodyStyle[colInd])
                     : bodyStyle[colInd];
             });
+            worksheet.getRow(rowInd + 1 + option.startRow).height = this.setBodyHeight ? this.setBodyHeight(rowInd + 1 + option.startRow, row) : this.bodyHeight;
         });
     }
 
-    private dealDataFormat(row: Object, head: Partial<xlsxHead>): any {
+    static dealDataFormat(row: Object, head: Partial<xlsxHead>): any {
         if (head.prop && row && row instanceof Object) {
             return head.format ? head.format(row[head.prop]) : row[head.prop];
         }
         return '';
     }
+
 
     downLoad(fileName?: string) {
         this.sheetMap.forEach(({ headMerage }, sheet) => {
