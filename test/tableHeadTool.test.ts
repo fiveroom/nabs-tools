@@ -35,12 +35,16 @@ describe('行和列计算', () => {
     let head: tableHead[] = createHeadArr();
     let deep = 0;
     let maxCol = handleColSpan(head, {
-        callBack: head => {
-            if (!Array.isArray(head.children) || head.children.length === 0)
+        callBack: (head, hasChild) => {
+            if (!hasChild)
                 deep = Math.max(deep, head._deep);
         },
     });
     handleRowSpan(head, deep);
+
+    test('深度', () => {
+        expect(deep).toBe(3)
+    })
 
     test('列', () => {
         expect(maxCol).toBe(6);
@@ -56,6 +60,39 @@ describe('行和列计算', () => {
         expect(head[1].children[0]._rowSpan).toBe(2);
     });
 });
+
+describe('测试show的加入', () => {
+    let head: tableHead[] = createHeadArr();
+    head[0].show = false;
+    head[1].children[1].show = false;
+    head[3].children[1].show = false;
+    let deep = 0;
+    let maxCol = handleColSpan(head, {
+        callBack: (head, hasChild) => {
+            if (!hasChild)
+                deep = Math.max(deep, head._deep);
+        },
+    });
+    handleRowSpan(head, deep);
+    handleBorderRight(head);
+    test('列', () => {
+        expect(maxCol).toBe(3);
+        expect(head[1]._colSpan).toBe(1);
+        expect(head[3]._colSpan).toBe(1);
+    });
+
+    test('行', () => {
+        expect(deep).toBe(2);
+        expect(head[0]._rowSpan).toBe(undefined);
+        expect(head[1]._rowSpan).toBe(1);
+        expect(head[3]._rowSpan).toBe(1);
+    })
+
+    test('右侧的计算', () => {
+        expect(head[3]._isRight).toBeTruthy();
+        expect(head[3].children[0]._isRight).toBeTruthy();
+    })
+})
 
 describe('得到 exceljs 格式', () => {
     let { headMerage, bottomHeads, headRow } = getHeadRowMerge(createHeadArr());
