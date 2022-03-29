@@ -2,7 +2,7 @@ export function downloadBuffer(
     blobParts: BlobPart[],
     fileName: string = 'file'
 ): Promise<any> {
-    return new Promise<any>(rsolve => {
+    return new Promise<any>(resolve => {
         let blob = new Blob(blobParts);
         const a = document.createElement('a');
         a.setAttribute('style', 'display: none;');
@@ -16,7 +16,7 @@ export function downloadBuffer(
         setTimeout(() => {
             URL.revokeObjectURL(url);
             a.remove();
-            rsolve(undefined);
+            resolve(undefined);
         }, 0);
     });
 }
