@@ -7,6 +7,7 @@ import { ExportEx } from "lib/exceljsExtend";
 import { faker } from "@faker-js/faker";
 import { headsXNGD, testData } from "./mock/data01";
 import { downloadBuffer } from 'lib/download';
+import { DynamicTable } from './dynamicTable';
 
 
 function App() {
@@ -201,6 +202,9 @@ function App() {
             <button onClick={exportHeadTopD}>测试</button>
             <button onClick={exportTree}>导出树表格</button>
             <button onClick={colSpanTest}>测试colSpan</button>
+
+            <br />
+            <DynamicTable></DynamicTable>
         </div>
     );
 }
