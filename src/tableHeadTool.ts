@@ -111,9 +111,9 @@ export function handleSpan<T extends tableHead>(headArr: T[]) {
     let maxDeep = 0,
         bottomHeads: T[] = [];
     handleColSpan<T>(headArr, {
-        callBack: head => {
-            if (!Array.isArray(head.children) || !head.children.length) {
-                maxDeep = Math.max(maxDeep, head['_deep']);
+        callBack: (head, childLen) => {
+            if (!childLen) {
+                maxDeep = Math.max(maxDeep, head._deep);
                 bottomHeads.push(head);
             }
         },
