@@ -7,7 +7,7 @@ import { ExportEx } from "lib/exceljsExtend";
 import { faker } from "@faker-js/faker";
 import { headsXNGD, testData } from "./mock/data01";
 import { downloadBuffer } from 'lib/download';
-import { DynamicTable } from './dynamicTable';
+import { DynamicTable, ViewXlsx } from './dynamicTable';
 
 
 function App() {
@@ -37,6 +37,7 @@ function App() {
                             prop: "p8",
                             label: "p8",
                             width: 80,
+                            show: false
                         },
                         {
                             prop: "p9",
@@ -86,9 +87,9 @@ function App() {
     let exportUseTool = () => {
         let head: xlsxHeadArr = createheader();
         let e = new ExportEx();
-        let sheet = e.addSheet("sheet 1", head, bodyData());
-        sheet.getColumn(1).hidden = true;
-        sheet.getRow(4).hidden = true;
+        e.addSheet("sheet 1", head, bodyData());
+        // sheet.getColumn(1).hidden = true;
+        // sheet.getRow(4).hidden = true;
         e.downLoad();
     };
 
@@ -97,7 +98,7 @@ function App() {
         let e = new ExportEx();
         let sheet = e.addSheet("sheet 1");
         sheet.addRow(["顶部行"]);
-        let headInfo = e.addheads(sheet, head); // 添加头
+        let headInfo = e.addHeads(sheet, head); // 添加头
         e.bodyHeight = 100;
 
         e.addBodyData(bodyData(), sheet, headInfo.bottomHeads);
@@ -117,7 +118,7 @@ function App() {
         let e = new ExportEx();
         let sheet = e.addSheet("sheet 1");
         sheet.properties.defaultRowHeight = 70;
-        let headInfo = e.addheads(sheet, headsXNGD as any); // 添加头
+        let headInfo = e.addHeads(sheet, headsXNGD as any); // 添加头
         e.addBodyData(testData, sheet, headInfo.bottomHeads);
         sheet.getColumn(1).hidden = true;
         sheet.getRow(4).hidden = true;
@@ -205,6 +206,7 @@ function App() {
 
             <br />
             <DynamicTable></DynamicTable>
+            <ViewXlsx></ViewXlsx>
         </div>
     );
 }
