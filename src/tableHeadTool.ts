@@ -109,9 +109,12 @@ export function handleBorderRight(headArr: tableHead[]) {
  */
 export function handleSpan<T extends tableHead>(headArr: T[]) {
     let maxDeep = 0,
-        bottomHeads: T[] = [];
+        bottomHeads: T[] = [],
+        headsLadder: T[][] = [];
     handleColSpan<T>(headArr, {
         callBack: (head, childLen) => {
+            headsLadder[head._deep - 1] ??= [];
+            headsLadder[head._deep - 1].push(head);
             if (!childLen) {
                 maxDeep = Math.max(maxDeep, head._deep);
                 bottomHeads.push(head);
@@ -123,6 +126,7 @@ export function handleSpan<T extends tableHead>(headArr: T[]) {
         bottomHeads,
         maxRow: maxDeep,
         maxCol: bottomHeads.length,
+        headsLadder
     };
 }
 
@@ -134,14 +138,14 @@ export interface getHeadRowMergeOption {
 
 export interface headInfo<T> {
     headRow: any[][];
-    headMerage: number[][];
+    headMerge: number[][];
     maxRow: number;
     maxCol: number;
     bottomHeads: T[];
 }
 
 /**
- * 得到excleJS行数据和合并数据
+ * 得到excelJS行数据和合并数据
  *
  *
  * @param headArr
@@ -156,16 +160,18 @@ export function getHeadRowMerge<T extends tableHead>(
 ): headInfo<T> {
     let {maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
     let headRow: any[] = [],
-        headMerage: number[][] = [];
+        headMerge: number[][] = [];
+    console.log(headArr);
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
         if (Array.isArray(headArr) && headArr.length) {
             let currRow = (headRow[rowIndex] ??= Array.from({
                 length: maxCol + startCol,
             }).fill(''));
             headArr.forEach(head => {
+                if(!head.show) return;
                 if (head['_colSpan'] != 1 || head['_rowSpan'] != 1) {
                     // 开始行 开始列 结束行 结束列
-                    headMerage.push([
+                    headMerge.push([
                         rowIndex + 1 + startRow,
                         colIndex + 1 + startCol,
                         rowIndex + head['_rowSpan'] + startRow,
@@ -181,7 +187,7 @@ export function getHeadRowMerge<T extends tableHead>(
     handleHeadRow(headArr);
     return {
         headRow,
-        headMerage,
+        headMerge,
         maxRow,
         maxCol,
         bottomHeads,
