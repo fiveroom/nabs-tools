@@ -95,8 +95,8 @@ describe('测试show的加入', () => {
 })
 
 describe('得到 exceljs 格式', () => {
-    let { headMerage, bottomHeads, headRow } = getHeadRowMerge(createHeadArr());
-    let merageArr = [
+    let { headMerge, bottomHeads, headRow } = getHeadRowMerge(createHeadArr());
+    let mergeArr = [
         [1, 2, 1, 3],
         [2, 5, 3, 5],
         [1, 1, 3, 1],
@@ -104,7 +104,7 @@ describe('得到 exceljs 格式', () => {
     let rowsTest = [['', '', '', '', '', 'p12']];
 
     test('合并项', () => {
-        expect(headMerage).toEqual(expect.arrayContaining(merageArr));
+        expect(headMerge).toEqual(expect.arrayContaining(mergeArr));
     });
 
     test('行数据', () => {
