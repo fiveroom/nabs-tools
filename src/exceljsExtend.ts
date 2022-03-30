@@ -86,7 +86,7 @@ export class ExportEx {
     ): Worksheet {
         let worksheet = this.workbook.addWorksheet(name);
         let headInfo: xlsxHeadInfo = {
-            headMerage: [],
+            headMerge: [],
             headRow: [],
             maxCol: 0,
             maxRow: 0,
@@ -94,7 +94,7 @@ export class ExportEx {
         };
         this.sheetMap.set(worksheet, headInfo);
         if (headArr && headArr.length) {
-            this.addheads(worksheet, headArr);
+            this.addHeads(worksheet, headArr);
             this.addBodyData(bodyData || [], worksheet, headInfo.bottomHeads);
         }
         return worksheet;
@@ -109,7 +109,7 @@ export class ExportEx {
      * @param headArr
      * @param option 指定行和列的开始位置，指定头名称的读取字段，用于单独调用`getHeadRowMerge()`
      */
-    addheads(
+    addHeads(
         sheet: Worksheet,
         headArr: xlsxHeadArr,
         option?: Partial<getHeadRowMergeOption>
@@ -201,8 +201,8 @@ export class ExportEx {
 
 
     downLoad(fileName?: string) {
-        this.sheetMap.forEach(({ headMerage }, sheet) => {
-            headMerage.forEach(merge => sheet.mergeCells.apply(sheet, merge));
+        this.sheetMap.forEach(({ headMerge }, sheet) => {
+            headMerge.forEach(merge => sheet.mergeCells.apply(sheet, merge));
         });
         return this.workbook.xlsx.writeBuffer().then(buffer => {
             return downloadBuffer([buffer], fileName);
