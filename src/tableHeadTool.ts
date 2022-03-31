@@ -73,7 +73,7 @@ export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
             if (head._numOfChildren) handleRowSpan(head.children, maxDeep);
             Object.defineProperty(head, '_rowSpan', {
                 writable: true,
-                value: head._numOfChildren ? 1 : maxDeep - head['_deep'] + 1,
+                value: head._numOfChildren ? 1:maxDeep - head['_deep'] + 1,
             });
         }
     });
@@ -159,17 +159,16 @@ export function getHeadRowMerge<T extends tableHead>(
     }: Partial<getHeadRowMergeOption> = {}
 ): headInfo<T> {
     let {maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
-    let headRow: any[] = [],
+    let headRow: any[] = Array.from({length: maxRow}, () => Array.from({
+            length: maxCol + startCol,
+        }).fill('')),
         headMerge: number[][] = [];
-    console.log(headArr);
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
         if (Array.isArray(headArr) && headArr.length) {
-            let currRow = (headRow[rowIndex] ??= Array.from({
-                length: maxCol + startCol,
-            }).fill(''));
+            let currRow = headRow[rowIndex];
             headArr.forEach(head => {
-                if(!head.show) return;
-                if (head['_colSpan'] != 1 || head['_rowSpan'] != 1) {
+                if (!head.show) return;
+                if (head['_colSpan']!=1 || head['_rowSpan']!=1) {
                     // 开始行 开始列 结束行 结束列
                     headMerge.push([
                         rowIndex + 1 + startRow,
