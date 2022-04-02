@@ -1,3 +1,5 @@
+// todo 加入缓存机制?
+
 export interface tableHead {
     children?: tableHead[];
     _colSpan?: number;
@@ -7,24 +9,26 @@ export interface tableHead {
     _isLeft?: boolean;
     _numOfChildren?: number;
     show?: boolean;
-
+    _id?: string; // todo 加上一个id用于标识并作为框架循环中的key？
     [prop: string]: any;
 }
 
 export interface handleColSpanOption<T> {
     deep: number;
-    callBack: (head: T, childLen: number) => void;
+    callBack: (head: T, childLen: number, parent: T) => void;
 }
 
 /**
  * 计算表格头部的列合并
  * @param headArr
  * @param param1
+ * @param parent 父级元素
  * @returns 总列数
  */
 export function handleColSpan<T extends tableHead>(
     headArr: T[],
-    {deep = 0, callBack = null}: Partial<handleColSpanOption<T>> = {}
+    {deep = 0, callBack = null}: Partial<handleColSpanOption<T>> = {},
+    parent?: T
 ): number {
     if (Array.isArray(headArr)) {
         deep++;
@@ -38,7 +42,7 @@ export function handleColSpan<T extends tableHead>(
                     handleColSpan(curr.children, {
                         deep,
                         callBack,
-                    });
+                    }, curr);
                 const colSpan = numOfChildren || 1;
                 Object.defineProperty(curr, '_colSpan', {
                     writable: true,
@@ -48,7 +52,7 @@ export function handleColSpan<T extends tableHead>(
                     writable: true,
                     value: deep,
                 });
-                callBack && callBack(curr, numOfChildren);
+                callBack && callBack(curr, numOfChildren, parent);
                 prev += colSpan;
             }
             Object.defineProperty(curr, '_numOfChildren', {
