@@ -12,11 +12,11 @@ const { outPath } = require("./gulp/config");
 
 const clean = () => del([outPath()]);
 
-const { buildES, buildBrower, buildDesc } = require('./gulp/gulpfile');
+const { buildES, buildBrowser, buildDesc } = require('./gulp/gulpfile');
 
 module.exports = {
     buildES,
-    buildBrower,
+    buildBrower: buildBrowser,
     buildDesc,
-    build: series(clean, parallel(buildES, buildBrower))
+    build: series(clean, parallel(buildES, buildBrowser))
 };

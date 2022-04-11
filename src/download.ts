@@ -1,6 +1,6 @@
 export function downloadBuffer(
     blobParts: BlobPart[],
-    fileName: string = 'file'
+    fileName: string = '未命名文件'
 ): Promise<any> {
     return new Promise<any>(resolve => {
         let blob = new Blob(blobParts);

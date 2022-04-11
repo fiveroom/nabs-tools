@@ -5,7 +5,7 @@ import rollupTerser from 'rollup-plugin-terser'
 import { outPath, srcPath } from './config'
 
 
-const buildBrower = () => {
+const buildBrowser = () => {
     return rollup
         .rollup({
             input: srcPath("main.ts"),
@@ -47,4 +47,4 @@ const buildBrower = () => {
         });
 };
 
-export default buildBrower
+export default buildBrowser

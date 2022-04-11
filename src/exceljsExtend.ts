@@ -1,12 +1,15 @@
-import {
-    Alignment,
-    Borders,
-    Column,
-    Font,
-    Style,
-    Workbook,
-    Worksheet,
-} from 'exceljs';
+// import {
+//     Alignment,
+//     Borders,
+//     Column,
+//     Font,
+//     Style,
+//     Workbook,
+//     Worksheet,
+// } from 'exceljs/dist/exceljs.min.js';
+
+import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+
 import {
     tableHead,
     getHeadRowMerge,
@@ -26,30 +29,30 @@ export interface xlsxHead extends tableHead {
     align: 'right' | 'center' | 'left';
     numFmt: string;
     format: (val: any) => any;
-    bodyStyleFormat: (style: Partial<Style>) => Partial<Style>;
+    bodyStyleFormat: (style: Partial<ExcelJS.Style>) => Partial<ExcelJS.Style>;
     // headStyleFormat: (style: Partial<Style>) => Partial<Style>;
 }
 
 export type xlsxHeadArr = Array<Partial<xlsxHead>>;
 
-export const DEFAULT_HEAD_BORDER_STYLE: Partial<Borders> = {
+export const DEFAULT_HEAD_BORDER_STYLE: Partial<ExcelJS.Borders> = {
     top: { style: 'thin', color: { argb: '000000' } },
     left: { style: 'thin', color: { argb: '000000' } },
     bottom: { style: 'thin', color: { argb: '000000' } },
     right: { style: 'thin', color: { argb: '000000' } },
 };
 
-export const DEFAULT_HEAD_FONT_STYLE: Partial<Font> = {
+export const DEFAULT_HEAD_FONT_STYLE: Partial<ExcelJS.Font> = {
     bold: true,
 };
 
-export const DEFAULT_HEAD_ALIGNMENT_STYLE: Partial<Alignment> = {
+export const DEFAULT_HEAD_ALIGNMENT_STYLE: Partial<ExcelJS.Alignment> = {
     vertical: 'middle',
     horizontal: 'center',
     wrapText: true,
 };
 
-export const DEFAULT_HEAD_STYLE: Partial<Style> = {
+export const DEFAULT_HEAD_STYLE: Partial<ExcelJS.Style> = {
     fill: {
         type: 'pattern',
         pattern: 'solid',
@@ -65,9 +68,9 @@ export const DEFAULT_HEAD_STYLE: Partial<Style> = {
 export type xlsxHeadInfo = headInfo<Partial<xlsxHead>>;
 
 export class ExportEx {
-    workbook: Workbook;
-    sheetMap: Map<Worksheet, xlsxHeadInfo> = new Map();
-    static defaultHeadStyle: Partial<Style> = DEFAULT_HEAD_STYLE;
+    workbook: ExcelJS.Workbook;
+    sheetMap: Map<ExcelJS.Worksheet, xlsxHeadInfo> = new Map();
+    static defaultHeadStyle: Partial<ExcelJS.Style> = DEFAULT_HEAD_STYLE;
     headHeight = 30;
     widthRadio: number;
     bodyHeight = 30;
@@ -75,7 +78,7 @@ export class ExportEx {
     setHeadHeight: (rowIndex: number, row: any) => number;
 
     constructor(widthRadio: number = 1) {
-        this.workbook = new Workbook();
+        this.workbook = new ExcelJS.Workbook();
         this.widthRadio = widthRadio;
     }
 
@@ -83,7 +86,7 @@ export class ExportEx {
         name: string,
         headArr?: xlsxHeadArr,
         bodyData?: Object[]
-    ): Worksheet {
+    ): ExcelJS.Worksheet {
         let worksheet = this.workbook.addWorksheet(name);
         let headInfo: xlsxHeadInfo = {
             headMerge: [],
@@ -110,7 +113,7 @@ export class ExportEx {
      * @param option 指定行和列的开始位置，指定头名称的读取字段，用于单独调用`getHeadRowMerge()`
      */
     addHeads(
-        sheet: Worksheet,
+        sheet: ExcelJS.Worksheet,
         headArr: xlsxHeadArr,
         option?: Partial<getHeadRowMergeOption>
     ) {
@@ -141,12 +144,12 @@ export class ExportEx {
 
     addBodyData(
         bodyData: Object[],
-        worksheet: Worksheet,
+        worksheet: ExcelJS.Worksheet,
         propHeads: xlsxHeadArr,
         option: Partial<getHeadRowMergeOption> = {}
     ): void {
-        let columns: Array<Partial<Column>> = [];
-        let bodyStyle: Partial<Style>[] = [];
+        let columns: Array<Partial<ExcelJS.Column>> = [];
+        let bodyStyle: Partial<ExcelJS.Style>[] = [];
         option = Object.assign(
             {
                 startCol: 0,

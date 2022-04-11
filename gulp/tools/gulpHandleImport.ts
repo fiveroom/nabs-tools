@@ -22,7 +22,7 @@ function getThirdPart(str) {
 
 function gulpHandleImport() {
     let mergeFile,
-        thridParts = "";
+        thirdParts = "";
 
     const dealInlineDependent = function (this: stream.Transform, file, enc, cb) {
         if (file.isNull()) {
@@ -50,7 +50,7 @@ function gulpHandleImport() {
         str = delExport(str);
         let thridPart;
         [str, thridPart] = getThirdPart(str);
-        thridParts += thridPart;
+        thirdParts += thridPart;
         mergeFile.contents = Buffer.concat([
             mergeFile.contents,
             Buffer.from(str),
@@ -60,7 +60,7 @@ function gulpHandleImport() {
 
     const endStream = function (this: stream.Transform, cb) {
         mergeFile.contents = Buffer.concat([
-            Buffer.from(thridParts ? thridParts + EOL + EOL : thridParts),
+            Buffer.from(thirdParts ? thirdParts + EOL + EOL : thirdParts),
             mergeFile.contents,
         ]);
         this.push(mergeFile);
