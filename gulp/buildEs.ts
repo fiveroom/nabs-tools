@@ -6,8 +6,8 @@ import concat from 'gulp-concat'
 import {dest, src, parallel} from 'gulp'
 import ts from "gulp-typescript"
 import commonjs from "@rollup/plugin-commonjs"
-// const commonjs = require("@rollup/plugin-commonjs");
-import { outPath, srcPath } from './config'
+import { excelJSPath, outPath, srcPath } from './config'
+
 
 const buildES = () => {
     return rollup
@@ -36,7 +36,7 @@ const buildES = () => {
                 }),
                 commonjs(),
             ],
-            external: ["exceljs"],
+            external: ["exceljs", "ExcelJS", excelJSPath],
         })
         .then(bundle => {
             return bundle.write({

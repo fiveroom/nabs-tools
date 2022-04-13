@@ -3,17 +3,21 @@ import { Buffer } from 'buffer'
 import { EOL } from 'os'
 import stream from 'stream'
 
+
 function delExport(str) {
     const regexInlineImport =
-        /\b(export|import)\b\s+.*?\bfrom\b\s*("|'){1}\.[A-Za-z0-9_\.\/]*\2\s*;?\n*/g;
+        /\b(export|import)\b\s+.*?\bfrom\b\s*(['"])\.[A-Za-z0-9_.\/]*\2\s*;?\n*/g;
     return str.replace(regexInlineImport, "");
 }
 
+/**
+ * 获取第三方的引入
+ */
 function getThirdPart(str) {
-    const regexThridImport =
-        /\bimport\b\s+.*?\bfrom\b\s*("|'){1}[A-Za-z0-9_@\/]*\1\s*;?\n*/g;
+    const regexThirdImport =
+        /\bimport\b\s+.*?\bfrom\b\s*(['"])[A-Za-z0-9_@\/.]*\1\s*;?\n*/g;
     let matchStr = "";
-    str = str.replace(regexThridImport, match => {
+    str = str.replace(regexThirdImport, match => {
         matchStr += match;
         return "";
     });
@@ -48,9 +52,11 @@ function gulpHandleImport() {
 
         let str = file.contents.toString();
         str = delExport(str);
-        let thridPart;
-        [str, thridPart] = getThirdPart(str);
-        thirdParts += thridPart;
+
+        // 得到第三方引入，并将其放入声明文件的顶部
+        let threePart;
+        [str, threePart] = getThirdPart(str);
+        thirdParts += threePart;
         mergeFile.contents = Buffer.concat([
             mergeFile.contents,
             Buffer.from(str),

@@ -1,5 +1,3 @@
-// todo 加入缓存机制?
-
 export interface tableHead {
     children?: tableHead[];
     _colSpan?: number;
@@ -9,7 +7,7 @@ export interface tableHead {
     _isLeft?: boolean;
     _numOfChildren?: number;
     show?: boolean;
-    _id?: string; // todo 加上一个id用于标识并作为框架循环中的key？
+    _id?: string;
     [prop: string]: any;
 }
 

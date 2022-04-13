@@ -1,13 +1,3 @@
-// import {
-//     Alignment,
-//     Borders,
-//     Column,
-//     Font,
-//     Style,
-//     Workbook,
-//     Worksheet,
-// } from 'exceljs/dist/exceljs.min.js';
-
 import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 
 import {

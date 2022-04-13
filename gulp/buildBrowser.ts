@@ -2,7 +2,7 @@ import * as nodeResolve from "@rollup/plugin-node-resolve"
 import * as babel from '@rollup/plugin-babel'
 import * as rollup from 'rollup'
 import rollupTerser from 'rollup-plugin-terser'
-import { outPath, srcPath } from './config'
+import { excelJSPath, outPath, srcPath } from './config'
 
 
 const buildBrowser = () => {
@@ -32,16 +32,16 @@ const buildBrowser = () => {
                     ecma: 2020,
                 }),
             ],
-            external: "exceljs",
+            external: ["exceljs", "ExcelJS", excelJSPath],
         })
         .then(bundle => {
             return bundle.write({
                 format: "iife",
                 name: "nabsTools",
-                file: outPath("index.brower.js"),
+                file: outPath("index.browser.js"),
                 sourcemap: true,
                 globals: {
-                    exceljs: "ExcelJS",
+                    'exceljs/dist/exceljs.min.js': "ExcelJS"
                 },
             });
         });
