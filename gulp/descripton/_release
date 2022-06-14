@@ -9,7 +9,7 @@
     "author": "fiveroom",
     "license": "ISC",
     "types": "./index.d.ts",
-    "browser": "./index.broweb.js",
+    "browser": "./index.browser.js",
     "homepage": "https://github.com/fiveroom/nabs-tools",
     "sideEffects": true,
     "dependencies": {
