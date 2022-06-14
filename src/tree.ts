@@ -1,5 +1,6 @@
 import { getDeepObj } from './core';
 
+
 /**
  * 以节点id作为键，生成一个对象返回
  * @param data
@@ -80,7 +81,7 @@ export function getOptionLeaf(
     propCfg: optionLeafPropCfg = {}
 ) {
     let props: optionLeafPropCfg = Object.assign(
-        { field: 'Field', children: 'children', addSearch: 'addSearch' },
+        {field: 'Field', children: 'children', addSearch: 'addSearch'},
         propCfg
     );
     let res = [];
@@ -151,55 +152,50 @@ export function getTreeNodeById<T>(
     return s;
 }
 
-interface listToTreeOption {
-    idProp: string;
-    parentIdProp: string;
-    childrenProp: string;
+export interface listToTreeOption<T> {
+    children?: string;
+    id?: string;
+    parent?: string;
+    callBack?: (data: T) => void;
 }
+
 
 /**
  * 列表转树
- * @param dataList 数据源
- * @param option 配置项
- * @returns 树和深度 `{data: [...], deep: 2}`
+ * @returns 树
+ * @param data
+ * @param config
  */
-export function listToTree(dataList: any[], option: listToTreeOption) {
-    let res = [];
-    let data = {};
-    let deep = 0;
-    if (!dataList?.length) {
-        return { data: res, deep: -1 };
-    }
-    for (let i = dataList.length - 1; i >= 0; i--) {
-        let item = dataList[i];
-        item[option.childrenProp] = [];
-        item._level_ = 0;
-        item._expand_ = true;
-        data[item[option.idProp]] = { obj: item, zIndex: 0 };
-        if (!item[option.parentIdProp]) {
-            dataList.splice(i, 1);
-            res.unshift(item);
+export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[] {
+    config = Object.assign({children: 'children', parent: 'ParentGuid', id: 'Guid'}, config);
+    const cProp = config.children;
+    const cacheChildren: { [prop: string]: T[] } = {};
+    const result: T[] = [];
+    const cacheObj: { [prop: string]: T } = {};
+    for (let item of data) {
+        if (!item) {
+            continue;
+        }
+        item[cProp] = [];
+        const id = item[config.id];
+        config.callBack && config.callBack(item);
+        cacheObj[id] = item;
+        const parentId = item[config.parent];
+        if (!parentId) {
+            result.push(item);
+        } else if (cacheObj[parentId]) {
+            cacheObj[parentId][cProp].push(item);
+        } else {
+            cacheChildren[parentId] ??= [];
+            cacheChildren[parentId].push(item);
         }
     }
-    for (let i = 0; i < dataList.length; i++) {
-        let item = dataList[i];
-        let currParent = data[item[option.parentIdProp]];
-        let parent = currParent;
-        while (parent) {
-            item._level_++;
-            parent = data[parent.obj[option.parentIdProp]];
-            if (parent && parent.obj._level_ != 0) {
-                item._level_ += parent.obj._level_ + 1;
-                break;
-            }
-        }
-        deep = Math.max(deep, item._level_);
-        if (currParent) {
-            currParent.obj[option.childrenProp].push(item);
-        }
-    }
-    return { data: res, deep };
+    Object.keys(cacheChildren).forEach(id => {
+        cacheObj[id] && cacheObj[id][cProp].unshift(...cacheChildren[id]);
+    });
+    return result;
 }
+
 
 /**
  * 树深度排序
@@ -246,4 +242,59 @@ export function treeWidth<T>(data: T[], child: string = 'children'): number {
         l += data.length;
     }
     return l;
+}
+
+export interface TreeHelperCallback<T = any> {
+    (item: T, option: {
+         parent: T,
+         deep: number,
+         brother: T[],
+         colLen: number,
+         zIndexArr: number[]
+     }
+    ): void;
+}
+
+/**
+ *
+ * @param data
+ * @param callback
+ * @param childrenProp
+ *
+ * @return 返回树的深度
+ */
+export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, childrenProp = 'children'): number {
+    if(typeof callback !== 'function'){
+        throw TypeError('callback is not a function')
+    }
+    if(!childrenProp || typeof childrenProp !== 'string'){
+        throw TypeError('childrenProp is not a string or is null')
+    }
+    let deepSum = 0;
+    // const result = [];
+    const fun = (data, parent = null, deep = 0, index = 0, zIndexArr = []) => {
+        if (Array.isArray(data) && data.length) {
+            deepSum = Math.max(deepSum, deep);
+            let colSum = data.reduce((col, item, i) => {
+                zIndexArr.push(i);
+                index++;
+                let info = fun(item[childrenProp], item, deep + 1, index, zIndexArr);
+                index = info.index;
+                callback &&
+                callback(item, {
+                    parent,
+                    deep,
+                    brother: data,
+                    colLen: info.col,
+                    zIndexArr: [...zIndexArr]
+                });
+                zIndexArr.pop();
+                return (info.col === 0 ? 1 : info.col) + col;
+            }, 0);
+            return {index, col: colSum};
+        }
+        return {index, col: 0};
+    };
+    fun(data);
+    return deepSum;
 }
