@@ -1,4 +1,4 @@
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 
 import {
     tableHead,
@@ -126,7 +126,9 @@ export class ExportEx {
                         ).style = ExportEx.defaultHeadStyle;
                     }
                 });
-                sheet.getRow(r + 1 + o.startRow).height = this.setHeadHeight ? this.setHeadHeight(r + 1 + o.startRow, rows) : this.headHeight;
+                sheet.getRow(r + 1 + o.startRow).height = this.setHeadHeight
+                    ? this.setHeadHeight(r + 1 + o.startRow, rows)
+                    : this.headHeight;
             });
         }
         return headInfo;
@@ -181,7 +183,10 @@ export class ExportEx {
                     ? head.bodyStyleFormat(bodyStyle[colInd])
                     : bodyStyle[colInd];
             });
-            worksheet.getRow(rowInd + 1 + option.startRow).height = this.setBodyHeight ? this.setBodyHeight(rowInd + 1 + option.startRow, row) : this.bodyHeight;
+            worksheet.getRow(rowInd + 1 + option.startRow).height = this
+                .setBodyHeight
+                ? this.setBodyHeight(rowInd + 1 + option.startRow, row)
+                : this.bodyHeight;
         });
     }
 
@@ -191,7 +196,6 @@ export class ExportEx {
         }
         return '';
     }
-
 
     downLoad(fileName?: string) {
         this.sheetMap.forEach(({ headMerge }, sheet) => {

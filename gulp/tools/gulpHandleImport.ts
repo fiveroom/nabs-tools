@@ -1,13 +1,12 @@
-import through from 'through2'
-import { Buffer } from 'buffer'
-import { EOL } from 'os'
-import stream from 'stream'
-
+import through from 'through2';
+import { Buffer } from 'buffer';
+import { EOL } from 'os';
+import stream from 'stream';
 
 function delExport(str) {
     const regexInlineImport =
         /\b(export|import)\b\s+.*?\bfrom\b\s*(['"])\.[A-Za-z0-9_.\/]*\2\s*;?\n*/g;
-    return str.replace(regexInlineImport, "");
+    return str.replace(regexInlineImport, '');
 }
 
 /**
@@ -16,19 +15,24 @@ function delExport(str) {
 function getThirdPart(str) {
     const regexThirdImport =
         /\bimport\b\s+.*?\bfrom\b\s*(['"])[A-Za-z0-9_@\/.]*\1\s*;?\n*/g;
-    let matchStr = "";
+    let matchStr = '';
     str = str.replace(regexThirdImport, match => {
         matchStr += match;
-        return "";
+        return '';
     });
     return [str, matchStr];
 }
 
 function gulpHandleImport() {
     let mergeFile,
-        thirdParts = "";
+        thirdParts = '';
 
-    const dealInlineDependent = function (this: stream.Transform, file, enc, cb) {
+    const dealInlineDependent = function (
+        this: stream.Transform,
+        file,
+        enc,
+        cb
+    ) {
         if (file.isNull()) {
             cb();
             return;
@@ -36,8 +40,8 @@ function gulpHandleImport() {
 
         if (file.isStream()) {
             this.emit(
-                "error",
-                new Error("gulp-concat: Streaming not supported")
+                'error',
+                new Error('gulp-concat: Streaming not supported')
             );
             cb();
             return;
@@ -47,7 +51,7 @@ function gulpHandleImport() {
             mergeFile = file.clone({
                 contents: false,
             });
-            mergeFile.contents = Buffer.from("");
+            mergeFile.contents = Buffer.from('');
         }
 
         let str = file.contents.toString();
@@ -78,6 +82,4 @@ function gulpHandleImport() {
 }
 
 // 导出插件主函数
-export {
-    gulpHandleImport
-}
+export { gulpHandleImport };

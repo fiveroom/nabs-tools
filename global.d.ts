@@ -1,2 +1,1 @@
-declare namespace ExcelJS {
-}
+declare namespace ExcelJS {}

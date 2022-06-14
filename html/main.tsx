@@ -1,14 +1,18 @@
 import { render } from "react-dom";
 import { useState } from "react";
 import { Workbook } from "exceljs";
-import { getHeadRowMerge, handleBorderRight, handleColSpan, handleRowSpan, tableHead } from "lib/tableHeadTool";
+import {
+    handleBorderRight,
+    handleColSpan,
+    handleRowSpan,
+    tableHead,
+} from "lib/tableHeadTool";
 import { xlsxHeadArr } from "lib/exceljsExtend";
 import { ExportEx } from "lib/exceljsExtend";
 import { faker } from "@faker-js/faker";
 import { headsXNGD, testData } from "./mock/data01";
-import { downloadBuffer } from 'lib/download';
-import { DynamicTable, ViewXlsx } from './dynamicTable';
-
+import { downloadBuffer } from "lib/download";
+import { DynamicTable, ViewXlsx } from "./dynamicTable";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -37,7 +41,7 @@ function App() {
                             prop: "p8",
                             label: "p8",
                             width: 80,
-                            show: false
+                            show: false,
                         },
                         {
                             prop: "p9",
@@ -127,61 +131,69 @@ function App() {
 
     const exportTree = () => {
         const wb = new Workbook();
-        const ws = wb.addWorksheet('ss');
+        const ws = wb.addWorksheet("ss");
         ws.addTable({
-            name: 'MyTable',
-            ref: 'A1',
+            name: "MyTable",
+            ref: "A1",
             headerRow: true,
             totalsRow: false,
             style: {
                 showRowStripes: true,
             },
             columns: [
-                {name: 'Date', totalsRowLabel: 'Totals:', filterButton: false},
-                {name: 'Amount', totalsRowFunction: 'sum', filterButton: false},
+                {
+                    name: "Date",
+                    totalsRowLabel: "Totals:",
+                    filterButton: false,
+                },
+                {
+                    name: "Amount",
+                    totalsRowFunction: "sum",
+                    filterButton: false,
+                },
             ],
             rows: [
-                [new Date('2019-07-20'), 70.10],
-                [new Date('2019-07-21'), 70.60],
-                [new Date('2019-07-22'), 70.10],
+                [new Date("2019-07-20"), 70.1],
+                [new Date("2019-07-21"), 70.6],
+                [new Date("2019-07-22"), 70.1],
             ],
         });
         wb.xlsx.writeBuffer().then(buffer => {
-            return downloadBuffer([buffer], 'fileName');
+            return downloadBuffer([buffer], "fileName");
         });
-    }
+    };
 
     const colSpanTest = () => {
         const headArr: tableHead[] = [
             {
-                label: '1',
+                label: "1",
                 show: true,
                 children: [
                     {
                         show: true,
-                        label: '1-1'
+                        label: "1-1",
                     },
                     {
                         show: false,
-                        label: '1-2'
-                    }
-                ]
+                        label: "1-2",
+                    },
+                ],
             },
             {
-                label: '2',
+                label: "2",
                 show: true,
-                rowSpan: 2
+                rowSpan: 2,
             },
             {
-                label: '3',
+                label: "3",
                 show: false,
                 children: [
                     {
                         show: true,
-                        label: '3-1'
-                    }
-                ]
-            }
+                        label: "3-1",
+                    },
+                ],
+            },
         ];
         let maxDeep = 0;
         handleColSpan(headArr, {
@@ -192,9 +204,9 @@ function App() {
             },
         });
         handleRowSpan(headArr, maxDeep);
-        handleBorderRight(headArr)
+        handleBorderRight(headArr);
         console.log(headArr);
-    }
+    };
 
     return (
         <div>
@@ -211,4 +223,4 @@ function App() {
     );
 }
 
-render(<App/>, document.getElementById("app"));
+render(<App />, document.getElementById("app"));

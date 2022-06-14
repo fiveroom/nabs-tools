@@ -1,6 +1,5 @@
 import { getDeepObj } from './core';
 
-
 /**
  * 以节点id作为键，生成一个对象返回
  * @param data
@@ -81,7 +80,7 @@ export function getOptionLeaf(
     propCfg: optionLeafPropCfg = {}
 ) {
     let props: optionLeafPropCfg = Object.assign(
-        {field: 'Field', children: 'children', addSearch: 'addSearch'},
+        { field: 'Field', children: 'children', addSearch: 'addSearch' },
         propCfg
     );
     let res = [];
@@ -159,15 +158,20 @@ export interface listToTreeOption<T> {
     callBack?: (data: T) => void;
 }
 
-
 /**
  * 列表转树
  * @returns 树
  * @param data
  * @param config
  */
-export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[] {
-    config = Object.assign({children: 'children', parent: 'ParentGuid', id: 'Guid'}, config);
+export function listToTree<T = any>(
+    data: T[],
+    config?: listToTreeOption<T>
+): T[] {
+    config = Object.assign(
+        { children: 'children', parent: 'ParentGuid', id: 'Guid' },
+        config
+    );
     const cProp = config.children;
     const cacheChildren: { [prop: string]: T[] } = {};
     const result: T[] = [];
@@ -195,7 +199,6 @@ export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[
     });
     return result;
 }
-
 
 /**
  * 树深度排序
@@ -245,12 +248,14 @@ export function treeWidth<T>(data: T[], child: string = 'children'): number {
 }
 
 export interface TreeHelperCallback<T = any> {
-    (item: T, option: {
-         parent: T,
-         deep: number,
-         brother: T[],
-         zIndexArr: number[]
-     }
+    (
+        item: T,
+        option: {
+            parent: T;
+            deep: number;
+            brother: T[];
+            zIndexArr: number[];
+        }
     ): void;
 }
 
@@ -262,12 +267,16 @@ export interface TreeHelperCallback<T = any> {
  *
  * @return 返回树的深度
  */
-export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, childrenProp = 'children'): number {
-    if(typeof callback !== 'function'){
-        throw TypeError('callback is not a function')
+export function treeHelper<T = any>(
+    data: T[],
+    callback: TreeHelperCallback<T>,
+    childrenProp = 'children'
+): number {
+    if (typeof callback !== 'function') {
+        throw TypeError('callback is not a function');
     }
-    if(!childrenProp || typeof childrenProp !== 'string'){
-        throw TypeError('childrenProp is not a string or is null')
+    if (!childrenProp || typeof childrenProp !== 'string') {
+        throw TypeError('childrenProp is not a string or is null');
     }
     let deepSum = 0;
     // const result = [];
@@ -278,12 +287,12 @@ export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, 
                 zIndexArr.push(i);
                 index++;
                 callback &&
-                callback(item, {
-                    parent,
-                    deep,
-                    brother: data,
-                    zIndexArr: [...zIndexArr]
-                });
+                    callback(item, {
+                        parent,
+                        deep,
+                        brother: data,
+                        zIndexArr: [...zIndexArr],
+                    });
                 fun(item[childrenProp], item, deep + 1, index, zIndexArr);
                 zIndexArr.pop();
             }, 0);

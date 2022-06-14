@@ -36,15 +36,14 @@ describe('行和列计算', () => {
     let deep = 0;
     let maxCol = handleColSpan(head, {
         callBack: (head, hasChild) => {
-            if (!hasChild)
-                deep = Math.max(deep, head._deep);
+            if (!hasChild) deep = Math.max(deep, head._deep);
         },
     });
     handleRowSpan(head, deep);
 
     test('深度', () => {
-        expect(deep).toBe(3)
-    })
+        expect(deep).toBe(3);
+    });
 
     test('列', () => {
         expect(maxCol).toBe(6);
@@ -69,8 +68,7 @@ describe('测试show的加入', () => {
     let deep = 0;
     let maxCol = handleColSpan(head, {
         callBack: (head, hasChild) => {
-            if (!hasChild)
-                deep = Math.max(deep, head._deep);
+            if (!hasChild) deep = Math.max(deep, head._deep);
         },
     });
     handleRowSpan(head, deep);
@@ -86,13 +84,13 @@ describe('测试show的加入', () => {
         expect(head[0]._rowSpan).toBe(undefined);
         expect(head[1]._rowSpan).toBe(1);
         expect(head[3]._rowSpan).toBe(1);
-    })
+    });
 
     test('右侧的计算', () => {
         expect(head[3]._isRight).toBeTruthy();
         expect(head[3].children[0]._isRight).toBeTruthy();
-    })
-})
+    });
+});
 
 describe('得到 exceljs 格式', () => {
     let { headMerge, bottomHeads, headRow } = getHeadRowMerge(createHeadArr());
@@ -118,6 +116,6 @@ test('寻找右边界', () => {
     expect([
         header[header.length - 1]._isRight,
         header[header.length - 1].children[1]._isRight,
-        header[header.length - 1].children[1].children[0]._isRight
-    ]).toEqual([true, true, true])
+        header[header.length - 1].children[1].children[0]._isRight,
+    ]).toEqual([true, true, true]);
 });

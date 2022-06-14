@@ -25,7 +25,7 @@ export interface handleColSpanOption<T> {
  */
 export function handleColSpan<T extends tableHead>(
     headArr: T[],
-    {deep = 0, callBack = null}: Partial<handleColSpanOption<T>> = {},
+    { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {},
     parent?: T
 ): number {
     if (Array.isArray(headArr)) {
@@ -36,11 +36,14 @@ export function handleColSpan<T extends tableHead>(
                 curr.show = true;
             }
             if (curr.show) {
-                numOfChildren =
-                    handleColSpan(curr.children, {
+                numOfChildren = handleColSpan(
+                    curr.children,
+                    {
                         deep,
                         callBack,
-                    }, curr);
+                    },
+                    curr
+                );
                 const colSpan = numOfChildren || 1;
                 Object.defineProperty(curr, '_colSpan', {
                     writable: true,
@@ -55,7 +58,7 @@ export function handleColSpan<T extends tableHead>(
             }
             Object.defineProperty(curr, '_numOfChildren', {
                 writable: true,
-                value: numOfChildren
+                value: numOfChildren,
             });
             return prev;
         }, 0);
@@ -75,12 +78,11 @@ export function handleRowSpan(headArr: tableHead[], maxDeep = 0) {
             if (head._numOfChildren) handleRowSpan(head.children, maxDeep);
             Object.defineProperty(head, '_rowSpan', {
                 writable: true,
-                value: head._numOfChildren ? 1:maxDeep - head['_deep'] + 1,
+                value: head._numOfChildren ? 1 : maxDeep - head['_deep'] + 1,
             });
         }
     });
 }
-
 
 /**
  * 寻找右边边界元素
@@ -95,13 +97,12 @@ export function handleBorderRight(headArr: tableHead[]) {
             if (head._numOfChildren) handleBorderRight(head.children);
             Object.defineProperty(head, '_isRight', {
                 writable: true,
-                value: true
+                value: true,
             });
             break;
         }
     }
 }
-
 
 /**
  * 计算表格头部的行和列合并
@@ -128,7 +129,7 @@ export function handleSpan<T extends tableHead>(headArr: T[]) {
         bottomHeads,
         maxRow: maxDeep,
         maxCol: bottomHeads.length,
-        headsLadder
+        headsLadder,
     };
 }
 
@@ -155,22 +156,21 @@ export interface headInfo<T> {
  */
 export function getHeadRowMerge<T extends tableHead>(
     headArr: T[],
-    {
-        startRow = 0,
-        startCol = 0,
-    }: Partial<getHeadRowMergeOption> = {}
+    { startRow = 0, startCol = 0 }: Partial<getHeadRowMergeOption> = {}
 ): headInfo<T> {
-    let {maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
-    let headRow: any[] = Array.from({length: maxRow}, () => Array.from({
-            length: maxCol + startCol,
-        }).fill('')),
+    let { maxRow, maxCol, bottomHeads } = handleSpan<T>(headArr);
+    let headRow: any[] = Array.from({ length: maxRow }, () =>
+            Array.from({
+                length: maxCol + startCol,
+            }).fill('')
+        ),
         headMerge: number[][] = [];
     let handleHeadRow = (headArr: tableHead[], rowIndex = 0, colIndex = 0) => {
         if (Array.isArray(headArr) && headArr.length) {
             let currRow = headRow[rowIndex];
             headArr.forEach(head => {
                 if (!head.show) return;
-                if (head['_colSpan']!=1 || head['_rowSpan']!=1) {
+                if (head['_colSpan'] != 1 || head['_rowSpan'] != 1) {
                     // 开始行 开始列 结束行 结束列
                     headMerge.push([
                         rowIndex + 1 + startRow,

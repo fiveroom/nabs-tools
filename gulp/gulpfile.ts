@@ -1,9 +1,5 @@
 import buildES from './buildEs';
-import buildBrowser from './buildBrowser'
-import buildDesc from './descripton'
+import buildBrowser from './buildBrowser';
+import buildDesc from './descripton';
 
-export {
-    buildES,
-    buildBrowser,
-    buildDesc
-}
+export { buildES, buildBrowser, buildDesc };
