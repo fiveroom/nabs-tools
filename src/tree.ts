@@ -249,7 +249,6 @@ export interface TreeHelperCallback<T = any> {
          parent: T,
          deep: number,
          brother: T[],
-         colLen: number,
          zIndexArr: number[]
      }
     ): void;
@@ -275,25 +274,20 @@ export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, 
     const fun = (data, parent = null, deep = 0, index = 0, zIndexArr = []) => {
         if (Array.isArray(data) && data.length) {
             deepSum = Math.max(deepSum, deep);
-            let colSum = data.reduce((col, item, i) => {
+            data.forEach((item, i) => {
                 zIndexArr.push(i);
                 index++;
-                let info = fun(item[childrenProp], item, deep + 1, index, zIndexArr);
-                index = info.index;
                 callback &&
                 callback(item, {
                     parent,
                     deep,
                     brother: data,
-                    colLen: info.col,
                     zIndexArr: [...zIndexArr]
                 });
+                fun(item[childrenProp], item, deep + 1, index, zIndexArr);
                 zIndexArr.pop();
-                return (info.col === 0 ? 1 : info.col) + col;
             }, 0);
-            return {index, col: colSum};
         }
-        return {index, col: 0};
     };
     fun(data);
     return deepSum;
