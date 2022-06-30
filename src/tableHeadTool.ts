@@ -107,20 +107,22 @@ export function handleBorderRight(headArr: tableHead[]) {
  * 计算表格头部的行和列合并
  *
  * @param headArr
+ * @param colCallBack
  * @returns
  */
-export function handleSpan<T extends tableHead>(headArr: T[]) {
+export function handleSpan<T extends tableHead>(headArr: T[], colCallBack?: (head: T, childLen: number, parent: T) => void) {
     let maxDeep = 0,
         bottomHeads: T[] = [],
         headsLadder: T[][] = [];
     handleColSpan<T>(headArr, {
-        callBack: (head, childLen) => {
+        callBack: (head, childLen, parent) => {
             headsLadder[head._deep - 1] ??= [];
             headsLadder[head._deep - 1].push(head);
             if (!childLen) {
                 maxDeep = Math.max(maxDeep, head._deep);
                 bottomHeads.push(head);
             }
+            colCallBack && colCallBack(head, childLen, parent);
         },
     });
     handleRowSpan(headArr, maxDeep);
