@@ -11,8 +11,5 @@
     "types": "./index.d.ts",
     "browser": "./index.broweb.js",
     "homepage": "https://github.com/fiveroom/nabs-tools",
-    "sideEffects": true,
-    "dependencies": {
-        "exceljs": "^4.3.0"
-    }
+    "sideEffects": true
 }
