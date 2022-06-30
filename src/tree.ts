@@ -117,7 +117,7 @@ export function getTreeNodeById<T>(
     data: T[],
     option?: getTreeNodeByIdOption
 ): {
-    zIndexArr: { d: T; i: number }[];
+    zIndexArr: { d: T; i: number, b: T[] }[];
     data: T;
 } {
     let prop = {
@@ -136,6 +136,7 @@ export function getTreeNodeById<T>(
             s.zIndexArr.push({
                 d,
                 i,
+                b: data
             });
             if (d[prop.id] === id) {
                 s.data = d;
