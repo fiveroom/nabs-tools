@@ -1,4 +1,4 @@
-import { treeToMap, listToTree, getTreeNodeById, treeHelper } from '../src/tree';
+import { getTreeNodeById, listToTree, LookupWay, treeHelper, treeToMap } from '../src/tree';
 
 
 let treeData_01: any[] = [
@@ -14,6 +14,25 @@ let treeData_01: any[] = [
         ],
         id: 'id1',
     },
+    {
+        name: 'name444',
+        children: [
+            {
+                name: 'name555'
+            },
+            {
+                name: "name666",
+                children: [
+                    {
+                        name: '4444'
+                    },
+                    {
+                        name: '888'
+                    }
+                ]
+            }
+        ]
+    }
 ];
 
 it('should get four elements', () => {
@@ -48,6 +67,40 @@ test("node name3's deep is 1", () => {
     })
     expect(treeData_01[0].children[1].deep).toEqual(1);
     expect(treeData_01[0].children[1].zIndexArr).toEqual([0, 1])
+})
+
+
+test("前序遍历", () => {
+    const name = [];
+    treeHelper(treeData_01, (node) => {
+        name.push(node.name)
+    }, {lookupWay: LookupWay.前序遍历})
+    expect(name).toEqual([
+        "name1",
+        "name2",
+        "name3",
+        "name4"
+    ]);
+})
+
+test("后序遍历", () => {
+    const name = [];
+    treeHelper(treeData_01, (node, {deep, zIndexArr}) => {
+        node.deep = deep;
+        node.zIndexArr = zIndexArr;
+        name.push(node.name)
+    }, {lookupWay: LookupWay.后序遍历})
+    expect(name).toEqual([
+        "name2",
+        "name4",
+        "name3",
+        "name1",
+        "name555",
+        "4444",
+        "888",
+        "name666",
+        "name444"
+    ]);
 })
 
 interface TestTreeNode {

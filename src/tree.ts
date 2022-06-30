@@ -85,7 +85,7 @@ export function getOptionLeaf(
         propCfg
     );
     let res = [];
-    const getChild = function () {
+    const getChild = function() {
         for (let i = 0; i < arr.length; i++) {
             let d = arr[i];
             if (d[props.addSearch] && !excludeProp.includes(d[props.field])) {
@@ -248,52 +248,61 @@ export interface TreeHelperCallback<T = any> {
     (item: T, option: {
          parent: T,
          deep: number,
-         brother: T[],
-         colLen: number,
          zIndexArr: number[]
      }
     ): void;
+}
+
+// 遍历方式
+export enum LookupWay {
+    前序遍历,
+    后序遍历
+}
+
+export type TreeHelperOption = string | {
+    childrenProp?: string;
+    lookupWay?: LookupWay
 }
 
 /**
  *
  * @param data
  * @param callback
- * @param childrenProp
+ * @param treeHelperOption
  *
  * @return 返回树的深度
  */
-export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, childrenProp = 'children'): number {
-    if(typeof callback !== 'function'){
-        throw TypeError('callback is not a function')
+export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, treeHelperOption: TreeHelperOption = 'children'): number {
+    if (typeof callback !== 'function') {
+        throw TypeError('callback is not a function');
     }
-    if(!childrenProp || typeof childrenProp !== 'string'){
-        throw TypeError('childrenProp is not a string or is null')
+    let o = {childrenProp: 'children', lookupWay: LookupWay.前序遍历};
+    if (typeof treeHelperOption !== 'string') {
+        Object.assign(o, treeHelperOption);
+    } else {
+        o.childrenProp = treeHelperOption;
     }
+
     let deepSum = 0;
-    // const result = [];
-    const fun = (data, parent = null, deep = 0, index = 0, zIndexArr = []) => {
+
+    const fun = (data, parent = null, deep = 0, zIndexArr = []) => {
         if (Array.isArray(data) && data.length) {
             deepSum = Math.max(deepSum, deep);
-            let colSum = data.reduce((col, item, i) => {
+            data.forEach((item, i) => {
                 zIndexArr.push(i);
-                index++;
-                let info = fun(item[childrenProp], item, deep + 1, index, zIndexArr);
-                index = info.index;
-                callback &&
-                callback(item, {
-                    parent,
-                    deep,
-                    brother: data,
-                    colLen: info.col,
-                    zIndexArr: [...zIndexArr]
-                });
+                switch (o.lookupWay) {
+                    case LookupWay.前序遍历:
+                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
+                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
+                        break;
+                    default:
+                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
+                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
+                        break
+                }
                 zIndexArr.pop();
-                return (info.col === 0 ? 1 : info.col) + col;
-            }, 0);
-            return {index, col: colSum};
+            });
         }
-        return {index, col: 0};
     };
     fun(data);
     return deepSum;

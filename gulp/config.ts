@@ -1,4 +1,4 @@
-import { join, resolve } from 'path'
+import { resolve } from 'path'
 const srcPath = path => {
     return resolve(process.cwd(), "src", path);
 };
