@@ -1,5 +1,6 @@
 import { getDeepObj } from './core';
 
+
 /**
  * 以节点id作为键，生成一个对象返回
  * @param data
@@ -80,11 +81,11 @@ export function getOptionLeaf(
     propCfg: optionLeafPropCfg = {}
 ) {
     let props: optionLeafPropCfg = Object.assign(
-        { field: 'Field', children: 'children', addSearch: 'addSearch' },
+        {field: 'Field', children: 'children', addSearch: 'addSearch'},
         propCfg
     );
     let res = [];
-    const getChild = function () {
+    const getChild = function() {
         for (let i = 0; i < arr.length; i++) {
             let d = arr[i];
             if (d[props.addSearch] && !excludeProp.includes(d[props.field])) {
@@ -116,7 +117,7 @@ export function getTreeNodeById<T>(
     data: T[],
     option?: getTreeNodeByIdOption
 ): {
-    zIndexArr: { d: T; i: number }[];
+    zIndexArr: { d: T; i: number, b: T[] }[];
     data: T;
 } {
     let prop = {
@@ -135,6 +136,7 @@ export function getTreeNodeById<T>(
             s.zIndexArr.push({
                 d,
                 i,
+                b: data
             });
             if (d[prop.id] === id) {
                 s.data = d;
@@ -158,20 +160,15 @@ export interface listToTreeOption<T> {
     callBack?: (data: T) => void;
 }
 
+
 /**
  * 列表转树
  * @returns 树
  * @param data
  * @param config
  */
-export function listToTree<T = any>(
-    data: T[],
-    config?: listToTreeOption<T>
-): T[] {
-    config = Object.assign(
-        { children: 'children', parent: 'ParentGuid', id: 'Guid' },
-        config
-    );
+export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[] {
+    config = Object.assign({children: 'children', parent: 'ParentGuid', id: 'Guid'}, config);
     const cProp = config.children;
     const cacheChildren: { [prop: string]: T[] } = {};
     const result: T[] = [];
@@ -199,6 +196,7 @@ export function listToTree<T = any>(
     });
     return result;
 }
+
 
 /**
  * 树深度排序
@@ -248,54 +246,63 @@ export function treeWidth<T>(data: T[], child: string = 'children'): number {
 }
 
 export interface TreeHelperCallback<T = any> {
-    (
-        item: T,
-        option: {
-            parent: T;
-            deep: number;
-            brother: T[];
-            zIndexArr: number[];
-        }
+    (item: T, option: {
+         parent: T,
+         deep: number,
+         zIndexArr: number[]
+     }
     ): void;
+}
+
+// 遍历方式
+export enum LookupWay {
+    前序遍历,
+    后序遍历
+}
+
+export type TreeHelperOption = string | {
+    childrenProp?: string;
+    lookupWay?: LookupWay
 }
 
 /**
  *
  * @param data
  * @param callback
- * @param childrenProp
+ * @param treeHelperOption
  *
  * @return 返回树的深度
  */
-export function treeHelper<T = any>(
-    data: T[],
-    callback: TreeHelperCallback<T>,
-    childrenProp = 'children'
-): number {
+export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, treeHelperOption: TreeHelperOption = 'children'): number {
     if (typeof callback !== 'function') {
         throw TypeError('callback is not a function');
     }
-    if (!childrenProp || typeof childrenProp !== 'string') {
-        throw TypeError('childrenProp is not a string or is null');
+    let o = {childrenProp: 'children', lookupWay: LookupWay.前序遍历};
+    if (typeof treeHelperOption !== 'string') {
+        Object.assign(o, treeHelperOption);
+    } else {
+        o.childrenProp = treeHelperOption;
     }
+
     let deepSum = 0;
-    // const result = [];
-    const fun = (data, parent = null, deep = 0, index = 0, zIndexArr = []) => {
+
+    const fun = (data, parent = null, deep = 0, zIndexArr = []) => {
         if (Array.isArray(data) && data.length) {
             deepSum = Math.max(deepSum, deep);
             data.forEach((item, i) => {
                 zIndexArr.push(i);
-                index++;
-                callback &&
-                    callback(item, {
-                        parent,
-                        deep,
-                        brother: data,
-                        zIndexArr: [...zIndexArr],
-                    });
-                fun(item[childrenProp], item, deep + 1, index, zIndexArr);
+                switch (o.lookupWay) {
+                    case LookupWay.前序遍历:
+                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
+                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
+                        break;
+                    default:
+                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
+                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
+                        break
+                }
                 zIndexArr.pop();
-            }, 0);
+            });
         }
     };
     fun(data);
