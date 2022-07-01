@@ -5,7 +5,7 @@ import { gulpHandleImport } from './tools/gulpHandleImport'
 import concat from 'gulp-concat'
 import {dest, src, parallel} from 'gulp'
 import ts from "gulp-typescript"
-import commonjs from "@rollup/plugin-commonjs"
+// import commonjs from "@rollup/plugin-commonjs"
 import { outPath, srcPath } from './config'
 
 
@@ -33,8 +33,7 @@ const buildES = () => {
                     ],
                     plugins: ["@babel/plugin-transform-runtime"],
                     configFile: false,
-                }),
-                commonjs(),
+                })
             ]
         })
         .then(bundle => {
