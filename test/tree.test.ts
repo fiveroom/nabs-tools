@@ -1,7 +1,8 @@
-import { getTreeNodeById, listToTree, LookupWay, treeHelper, treeToMap } from '../src/tree';
+import { getTreeNodeById, listToTree, LookupWay, treeHelper, treeToMap, } from '../src/tree';
+import { tableHead, handleColSpan } from "../src/tableHeadTool";
 
 
-let treeData_01: any[] = [
+let treeData_01: tableHead[] = [
     {
         name: 'name1',
         children: [
@@ -166,4 +167,13 @@ const treeData: TestTreeNode[] = [
 
 test('test listToTree', () => {
     expect(listToTree(listTree, {children: 'Children'})).toEqual(treeData)
+})
+
+test('test _id', () => {
+    handleColSpan(treeData_01, void 0, null, true);
+    let hasID = true;
+    treeHelper(treeData_01, (data) => {
+        hasID = !!data._id;
+    })
+    expect(hasID).toEqual(true)
 })

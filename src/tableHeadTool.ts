@@ -1,3 +1,6 @@
+import { s4 } from "./core";
+
+
 export interface tableHead {
     children?: tableHead[];
     _colSpan?: number;
@@ -8,6 +11,7 @@ export interface tableHead {
     _numOfChildren?: number;
     show?: boolean;
     _id?: string;
+
     [prop: string]: any;
 }
 
@@ -21,12 +25,14 @@ export interface handleColSpanOption<T> {
  * @param headArr
  * @param param1
  * @param parent 父级元素
+ * @param widthId {boolean} 是否为每一项生成唯一ID
  * @returns 总列数
  */
 export function handleColSpan<T extends tableHead>(
     headArr: T[],
-    { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {},
-    parent?: T
+    {deep = 0, callBack = null}: Partial<handleColSpanOption<T>> = {},
+    parent?: T,
+    widthId?: boolean
 ): number {
     if (Array.isArray(headArr)) {
         deep++;
@@ -42,7 +48,8 @@ export function handleColSpan<T extends tableHead>(
                         deep,
                         callBack,
                     },
-                    curr
+                    curr,
+                    widthId
                 );
                 const colSpan = numOfChildren || 1;
                 Object.defineProperty(curr, '_colSpan', {
@@ -53,6 +60,13 @@ export function handleColSpan<T extends tableHead>(
                     writable: true,
                     value: deep,
                 });
+                if (widthId && !curr._id) {
+                    Object.defineProperty(curr, '_id', {
+                        writable: false,
+                        value: s4(),
+                    });
+                }
+
                 callBack && callBack(curr, numOfChildren, parent);
                 prev += colSpan;
             }
@@ -109,9 +123,10 @@ export function handleBorderRight(headArr: tableHead[]) {
  *
  * @param headArr
  * @param colCallBack
+ * @param widthId {boolean} 是否为每一项生成唯一ID
  * @returns
  */
-export function handleSpan<T extends tableHead>(headArr: T[], colCallBack?: (head: T, childLen: number, parent: T) => void) {
+export function handleSpan<T extends tableHead>(headArr: T[], colCallBack?: (head: T, childLen: number, parent: T) => void, widthId?: boolean) {
     let maxDeep = 0,
         bottomHeads: T[] = [],
         headsLadder: T[][] = [];
@@ -125,7 +140,7 @@ export function handleSpan<T extends tableHead>(headArr: T[], colCallBack?: (hea
             }
             colCallBack && colCallBack(head, childLen, parent);
         },
-    });
+    }, null, widthId);
     handleRowSpan(headArr, maxDeep);
     return {
         bottomHeads,
@@ -158,10 +173,10 @@ export interface headInfo<T> {
  */
 export function getHeadRowMerge<T extends tableHead>(
     headArr: T[],
-    { startRow = 0, startCol = 0 }: Partial<getHeadRowMergeOption> = {}
+    {startRow = 0, startCol = 0}: Partial<getHeadRowMergeOption> = {}
 ): headInfo<T> {
-    let { maxRow, maxCol, bottomHeads } = handleSpan<T>(headArr);
-    let headRow: any[] = Array.from({ length: maxRow }, () =>
+    let {maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
+    let headRow: any[] = Array.from({length: maxRow}, () =>
             Array.from({
                 length: maxCol + startCol,
             }).fill('')
