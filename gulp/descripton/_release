@@ -2,14 +2,13 @@
     "name": "@fiveroom/js-tools",
     "version": "{{version}}",
     "description": "小工具",
-    "main": "index.js",
+    "main": "./index.js",
     "exports": {
         ".": "./index.js"
     },
     "author": "fiveroom",
     "license": "ISC",
     "types": "./index.d.ts",
-    "browser": "./index.browser.js",
     "homepage": "https://github.com/fiveroom/nabs-tools",
     "sideEffects": true
 }
