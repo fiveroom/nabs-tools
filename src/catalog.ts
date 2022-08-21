@@ -21,8 +21,12 @@ export class Catalog {
         1: '',
         10: '十',
         100: '百',
-        1000: '千'
+        1000: '千',
+        10000: '万',
+        100000000: '亿'
     }
+
+    static numMap: { [prop: number]: string } = {};
 
     /**
      * 返回目录结构
@@ -185,23 +189,39 @@ export class Catalog {
      * @returns 1 => 一
      */
     static numToZH_CN(num: number): string {
-        if(num < 10) {
+        if (!this.numMap) this.numMap = {};
+        if (this.numMap[num]) {
+            return this.numMap[num]
+        }
+        if (num < 10) {
             return this.distNum[num]
         }
+        if (num >= 1000000000000) {
+            throw Error('只支持1000000000000以下数字转换')
+        }
         let len = num.toString().length - 1;
-        let numb = num;
         let resStr = '';
         while (len >= 0) {
             const divisor = 10 ** len;
             let maxV = Math.floor(num / divisor);
             num -= maxV * divisor;
-            resStr += this.distNum[maxV] + (maxV == 0 ? '' : this.dictUnit[divisor]);
+            resStr += this.distNum[maxV] + (maxV == 0 ? '' : this.getUnit(divisor));
+            if (num === 0) {
+                break;
+            }
             len--;
         }
         resStr = resStr.replace(/(零)+/g, '零').replace(/零+$/, '');
-        if (numb >= 10 && numb < 20) {
-            resStr = resStr.slice(1)
-        }
+        this.numMap[num] = resStr;
         return resStr
+    }
+
+    static getUnit(num: number) {
+        let unit = this.dictUnit[num];
+        while (unit === undefined) {
+            num /= 10000;
+            unit = this.dictUnit[num]
+        }
+        return unit
     }
 }
