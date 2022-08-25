@@ -177,15 +177,14 @@ export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): an
         if (!item) {
             continue;
         }
-        item[cProp] = [];
-        const id = item[config.id];
         if (config.callBack) {
             let data = config.callBack(item);
             if(data){
                 item = data;
             }
         }
-
+        item[cProp] = [];
+        const id = item[config.id];
         cacheObj[id] = item;
         const parentId = item[config.parent];
         if (!parentId) {
