@@ -1,5 +1,5 @@
 import { getTreeNodeById, listToTree, LookupWay, treeHelper, treeToMap, } from '../src/tree';
-import { tableHead, handleColSpan } from "../src/tableHeadTool";
+import { tableHead, handleColSpan } from '../src/tableHeadTool';
 
 
 let treeData_01: tableHead[] = [
@@ -22,7 +22,7 @@ let treeData_01: tableHead[] = [
                 name: 'name555'
             },
             {
-                name: "name666",
+                name: 'name666',
                 children: [
                     {
                         name: '4444'
@@ -61,54 +61,55 @@ test('get node from tree by id', () => {
 });
 
 
-test("node name3's deep is 1", () => {
+test('node name3\'s deep is 1', () => {
     treeHelper(treeData_01, (node, {deep, zIndexArr}) => {
         node.deep = deep;
         node.zIndexArr = zIndexArr;
-    })
+    });
     expect(treeData_01[0].children[1].deep).toEqual(1);
-    expect(treeData_01[0].children[1].zIndexArr).toEqual([0, 1])
-})
+    expect(treeData_01[0].children[1].zIndexArr).toEqual([0, 1]);
+});
 
 
-test("前序遍历", () => {
+test('前序遍历', () => {
     const name = [];
     treeHelper(treeData_01, (node) => {
-        name.push(node.name)
-    }, {lookupWay: LookupWay.前序遍历})
+        name.push(node.name);
+    }, {lookupWay: LookupWay.前序遍历});
     expect(name).toEqual([
-        "name1",
-        "name2",
-        "name3",
-        "name4"
+        'name1',
+        'name2',
+        'name3',
+        'name4'
     ]);
-})
+});
 
-test("后序遍历", () => {
+test('后序遍历', () => {
     const name = [];
     treeHelper(treeData_01, (node, {deep, zIndexArr}) => {
         node.deep = deep;
         node.zIndexArr = zIndexArr;
-        name.push(node.name)
-    }, {lookupWay: LookupWay.后序遍历})
+        name.push(node.name);
+    }, {lookupWay: LookupWay.后序遍历});
     expect(name).toEqual([
-        "name2",
-        "name4",
-        "name3",
-        "name1",
-        "name555",
-        "4444",
-        "888",
-        "name666",
-        "name444"
+        'name2',
+        'name4',
+        'name3',
+        'name1',
+        'name555',
+        '4444',
+        '888',
+        'name666',
+        'name444'
     ]);
-})
+});
 
 interface TestTreeNode {
     Guid: string;
     ParentGuid: string;
     Label: string;
-    Children?: TestTreeNode[]
+    Children?: TestTreeNode[];
+    [prop: string]: any
 }
 
 const listTree: TestTreeNode[] = [
@@ -123,6 +124,43 @@ const listTree: TestTreeNode[] = [
     {Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1'},
     {Guid: '3', ParentGuid: null, Children: [], Label: 'node3'},
     {Guid: '3-2', ParentGuid: '3', Children: [], Label: 'node3-2'},
+];
+
+const listTreeSmall: TestTreeNode[] = [
+    {Guid: '1', ParentGuid: null, Children: [], Label: 'node1'},
+    {Guid: '1-2', ParentGuid: '1', Children: [], Label: 'node1-1'},
+    {Guid: '2', ParentGuid: null, Children: [], Label: 'node1-2'},
+    {Guid: '2-1', ParentGuid: '2', Children: [], Label: 'node2-1'},
+    {Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1'},
+    {Guid: '3', ParentGuid: null, Children: [], Label: 'node3'},
+];
+
+const treeDataSmall: TestTreeNode[] = [
+    {
+        Guid: '1',
+        ParentGuid: null,
+        hahah: 213,
+        Children: [
+            {
+                Guid: '1-2', ParentGuid: '1',hahah: 213, Children: [
+
+                ], Label: 'node1-1'
+            },
+        ],
+        Label: 'node1'
+    },
+    {
+        Guid: '2',hahah: 213, ParentGuid: null, Children: [
+            {Guid: '2-1', ParentGuid: '2',hahah: 213, Children: [], Label: 'node2-1'},
+        ], Label: 'node1-2'
+    },
+
+    {
+        Guid: '3',hahah: 213, ParentGuid: null, Children: [
+            {Guid: '3-1', ParentGuid: '3',hahah: 213, Children: [], Label: 'node3-1'},
+
+        ], Label: 'node3'
+    },
 ];
 
 const treeData: TestTreeNode[] = [
@@ -166,14 +204,19 @@ const treeData: TestTreeNode[] = [
 ];
 
 test('test listToTree', () => {
-    expect(listToTree(listTree, {children: 'Children'})).toEqual(treeData)
-})
+    expect(listToTree(listTreeSmall, {
+        children: 'Children',
+        callBack: (data) => {
+            return {...data, hahah: 213}
+        }
+    })).toEqual(treeDataSmall);
+});
 
 test('test _id', () => {
     handleColSpan(treeData_01, void 0, null, true);
     let hasID = true;
     treeHelper(treeData_01, (data) => {
         hasID = !!data._id;
-    })
-    expect(hasID).toEqual(true)
-})
+    });
+    expect(hasID).toEqual(true);
+});

@@ -157,7 +157,7 @@ export interface listToTreeOption<T> {
     children?: string;
     id?: string;
     parent?: string;
-    callBack?: (data: T) => void;
+    callBack?: (data: T) => any;
 }
 
 
@@ -167,11 +167,11 @@ export interface listToTreeOption<T> {
  * @param data
  * @param config
  */
-export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[] {
+export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): any[] {
     config = Object.assign({children: 'children', parent: 'ParentGuid', id: 'Guid'}, config);
     const cProp = config.children;
     const cacheChildren: { [prop: string]: T[] } = {};
-    const result: T[] = [];
+    const result: any[] = [];
     const cacheObj: { [prop: string]: T } = {};
     for (let item of data) {
         if (!item) {
@@ -179,7 +179,13 @@ export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): T[
         }
         item[cProp] = [];
         const id = item[config.id];
-        config.callBack && config.callBack(item);
+        if (config.callBack) {
+            let data = config.callBack(item);
+            if(data){
+                item = data;
+            }
+        }
+
         cacheObj[id] = item;
         const parentId = item[config.parent];
         if (!parentId) {
@@ -299,7 +305,7 @@ export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, 
                     default:
                         fun(item[o.childrenProp], item, deep + 1, zIndexArr);
                         callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
-                        break
+                        break;
                 }
                 zIndexArr.pop();
             });
