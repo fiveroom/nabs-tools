@@ -70,10 +70,9 @@ export function getDeepObj(data: any, d: string, split = '.') {
     return r;
 }
 
-
 /**
  * 获取四位随机数
  */
 export function s4(): string {
-    return ((Math.random() * (0xFFFF - 0x1000) + 0x1000) | 0).toString(16)
+    return ((Math.random() * (0xffff - 0x1000) + 0x1000) | 0).toString(16);
 }

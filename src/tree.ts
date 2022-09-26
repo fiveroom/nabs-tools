@@ -1,6 +1,5 @@
 import { getDeepObj } from './core';
 
-
 /**
  * 以节点id作为键，生成一个对象返回
  * @param data
@@ -81,11 +80,11 @@ export function getOptionLeaf(
     propCfg: optionLeafPropCfg = {}
 ) {
     let props: optionLeafPropCfg = Object.assign(
-        {field: 'Field', children: 'children', addSearch: 'addSearch'},
+        { field: 'Field', children: 'children', addSearch: 'addSearch' },
         propCfg
     );
     let res = [];
-    const getChild = function() {
+    const getChild = function () {
         for (let i = 0; i < arr.length; i++) {
             let d = arr[i];
             if (d[props.addSearch] && !excludeProp.includes(d[props.field])) {
@@ -109,7 +108,7 @@ interface getTreeNodeByIdOption {
  * 获取树节点和其节点树
  * @param id
  * @param data
- * @param option
+ * @param option 默认 {id: 'id', children: 'children'}
  * @returns
  */
 export function getTreeNodeById<T>(
@@ -117,7 +116,7 @@ export function getTreeNodeById<T>(
     data: T[],
     option?: getTreeNodeByIdOption
 ): {
-    zIndexArr: { d: T; i: number, b: T[] }[];
+    zIndexArr: { d: T; i: number; b: T[] }[];
     data: T;
 } {
     let prop = {
@@ -136,7 +135,7 @@ export function getTreeNodeById<T>(
             s.zIndexArr.push({
                 d,
                 i,
-                b: data
+                b: data,
             });
             if (d[prop.id] === id) {
                 s.data = d;
@@ -160,15 +159,20 @@ export interface listToTreeOption<T> {
     callBack?: (data: T) => any;
 }
 
-
 /**
  * 列表转树
- * @returns 树
  * @param data
- * @param config
+ * @param config 默认 {children: 'children', parent: 'ParentGuid', id: 'Guid'}
+ * @returns 树
  */
-export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): any[] {
-    config = Object.assign({children: 'children', parent: 'ParentGuid', id: 'Guid'}, config);
+export function listToTree<T = any>(
+    data: T[],
+    config?: listToTreeOption<T>
+): any[] {
+    config = Object.assign(
+        { children: 'children', parent: 'ParentGuid', id: 'Guid' },
+        config
+    );
     const cProp = config.children;
     const cacheChildren: { [prop: string]: T[] } = {};
     const result: any[] = [];
@@ -179,7 +183,7 @@ export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): an
         }
         if (config.callBack) {
             let data = config.callBack(item);
-            if(data){
+            if (data) {
                 item = data;
             }
         }
@@ -202,13 +206,12 @@ export function listToTree<T = any>(data: T[], config?: listToTreeOption<T>): an
     return result;
 }
 
-
 /**
  * 树深度排序
  * @param data
  * @param sortFun
- * @param id
- * @param child
+ * @param id 默认 id
+ * @param child 默认 children
  * @returns
  */
 export function treeSortDeep<T>(
@@ -251,64 +254,109 @@ export function treeWidth<T>(data: T[], child: string = 'children'): number {
 }
 
 export interface TreeHelperCallback<T = any> {
-    (item: T, option: {
-         parent: T,
-         deep: number,
-         zIndexArr: number[]
-     }
+    (
+        item: T,
+        option: {
+            parent: T;
+            deep: number;
+            zIndexArr: number[];
+        }
     ): void;
+}
+
+export interface TreeHelperTop<T = any> {
+    (
+        item: T,
+        option: {
+            parent: T;
+            deep: number;
+            zIndexArr: number[];
+        }
+    ): boolean;
 }
 
 // 遍历方式
 export enum LookupWay {
     前序遍历,
-    后序遍历
+    后序遍历,
 }
 
-export type TreeHelperOption = string | {
+export interface ExtraOption<T> {
     childrenProp?: string;
-    lookupWay?: LookupWay
+    lookupWay?: LookupWay;
+    // reverseCall?: TreeHelperCallback<T>,
+    whenStop?: TreeHelperTop<T>;
 }
+
+export type TreeHelperOption<T> = string | ExtraOption<T>;
 
 /**
+ * 树循环帮助函数，子项属性默认为 `children`
  *
  * @param data
  * @param callback
  * @param treeHelperOption
  *
- * @return 返回树的深度
+ * @return {number} 返回树的深度
  */
-export function treeHelper<T = any>(data: T[], callback: TreeHelperCallback<T>, treeHelperOption: TreeHelperOption = 'children'): number {
+export function treeHelper<T = any>(
+    data: T[],
+    callback: TreeHelperCallback<T>,
+    treeHelperOption: TreeHelperOption<T> = 'children'
+): number {
     if (typeof callback !== 'function') {
         throw TypeError('callback is not a function');
     }
-    let o = {childrenProp: 'children', lookupWay: LookupWay.前序遍历};
+    let o: ExtraOption<T> = {
+        childrenProp: 'children',
+        lookupWay: LookupWay.前序遍历,
+    };
     if (typeof treeHelperOption !== 'string') {
         Object.assign(o, treeHelperOption);
     } else {
         o.childrenProp = treeHelperOption;
     }
+    // const reverseCall = o.reverseCall;
+    const whenStop = o.whenStop;
 
     let deepSum = 0;
 
     const fun = (data, parent = null, deep = 0, zIndexArr = []) => {
         if (Array.isArray(data) && data.length) {
             deepSum = Math.max(deepSum, deep);
-            data.forEach((item, i) => {
+            for (let i = 0; i < data.length; i++) {
+                const item = data[i];
                 zIndexArr.push(i);
+                const context = { parent, deep, zIndexArr: [...zIndexArr] };
+                let stop;
                 switch (o.lookupWay) {
                     case LookupWay.前序遍历:
-                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
-                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
+                        callback(item, context);
+                        stop = fun(
+                            item[o.childrenProp],
+                            item,
+                            deep + 1,
+                            zIndexArr
+                        );
                         break;
                     default:
-                        fun(item[o.childrenProp], item, deep + 1, zIndexArr);
-                        callback(item, {parent, deep, zIndexArr: [...zIndexArr]});
+                        stop = fun(
+                            item[o.childrenProp],
+                            item,
+                            deep + 1,
+                            zIndexArr
+                        );
+                        callback(item, context);
                         break;
                 }
+                // reverseCall && reverseCall(item, context);
+                if (stop || (whenStop && whenStop(item, context))) {
+                    return true;
+                }
                 zIndexArr.pop();
-            });
+            }
         }
+        return false;
     };
     fun(data);
     return deepSum;

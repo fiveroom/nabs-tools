@@ -1,5 +1,4 @@
-import { s4 } from "./core";
-
+import { s4 } from './core';
 
 export interface tableHead {
     children?: tableHead[];
@@ -30,7 +29,7 @@ export interface handleColSpanOption<T> {
  */
 export function handleColSpan<T extends tableHead>(
     headArr: T[],
-    {deep = 0, callBack = null}: Partial<handleColSpanOption<T>> = {},
+    { deep = 0, callBack = null }: Partial<handleColSpanOption<T>> = {},
     parent?: T,
     widthId?: boolean
 ): number {
@@ -126,21 +125,30 @@ export function handleBorderRight(headArr: tableHead[]) {
  * @param widthId {boolean} 是否为每一项生成唯一ID
  * @returns
  */
-export function handleSpan<T extends tableHead>(headArr: T[], colCallBack?: (head: T, childLen: number, parent: T) => void, widthId?: boolean) {
+export function handleSpan<T extends tableHead>(
+    headArr: T[],
+    colCallBack?: (head: T, childLen: number, parent: T) => void,
+    widthId?: boolean
+) {
     let maxDeep = 0,
         bottomHeads: T[] = [],
         headsLadder: T[][] = [];
-    handleColSpan<T>(headArr, {
-        callBack: (head, childLen, parent) => {
-            headsLadder[head._deep - 1] ??= [];
-            headsLadder[head._deep - 1].push(head);
-            if (!childLen) {
-                maxDeep = Math.max(maxDeep, head._deep);
-                bottomHeads.push(head);
-            }
-            colCallBack && colCallBack(head, childLen, parent);
+    handleColSpan<T>(
+        headArr,
+        {
+            callBack: (head, childLen, parent) => {
+                headsLadder[head._deep - 1] ??= [];
+                headsLadder[head._deep - 1].push(head);
+                if (!childLen) {
+                    maxDeep = Math.max(maxDeep, head._deep);
+                    bottomHeads.push(head);
+                }
+                colCallBack && colCallBack(head, childLen, parent);
+            },
         },
-    }, null, widthId);
+        null,
+        widthId
+    );
     handleRowSpan(headArr, maxDeep);
     return {
         bottomHeads,
@@ -173,10 +181,10 @@ export interface headInfo<T> {
  */
 export function getHeadRowMerge<T extends tableHead>(
     headArr: T[],
-    {startRow = 0, startCol = 0}: Partial<getHeadRowMergeOption> = {}
+    { startRow = 0, startCol = 0 }: Partial<getHeadRowMergeOption> = {}
 ): headInfo<T> {
-    let {maxRow, maxCol, bottomHeads} = handleSpan<T>(headArr);
-    let headRow: any[] = Array.from({length: maxRow}, () =>
+    let { maxRow, maxCol, bottomHeads } = handleSpan<T>(headArr);
+    let headRow: any[] = Array.from({ length: maxRow }, () =>
             Array.from({
                 length: maxCol + startCol,
             }).fill('')

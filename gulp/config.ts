@@ -1,13 +1,10 @@
-import { resolve } from 'path'
+import { resolve } from 'path';
 const srcPath = path => {
-    return resolve(process.cwd(), "src", path);
+    return resolve(process.cwd(), 'src', path);
 };
 
-const outPath = (path = "") => {
-    return resolve(process.cwd(), "release", path);
+const outPath = (path = '') => {
+    return resolve(process.cwd(), 'release', path);
 };
 
-export {
-    outPath,
-    srcPath
-};
+export { outPath, srcPath };
