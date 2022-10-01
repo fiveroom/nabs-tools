@@ -157,12 +157,14 @@ export interface listToTreeOption<T> {
     id?: string;
     parent?: string;
     callBack?: (data: T) => any;
+    applyNoneParent?: boolean
 }
 
 /**
  * 列表转树
  * @param data
- * @param config 默认 {children: 'children', parent: 'ParentGuid', id: 'Guid'}
+ * @param config 默认
+ * {"children": "children", "parent": "ParentGuid", "id": "Guid", "applyNoneParent": false}
  * @returns 树
  */
 export function listToTree<T = any>(
@@ -170,11 +172,12 @@ export function listToTree<T = any>(
     config?: listToTreeOption<T>
 ): any[] {
     config = Object.assign(
-        { children: 'children', parent: 'ParentGuid', id: 'Guid' },
+        { children: 'children', parent: 'ParentGuid', id: 'Guid', applyNoneParent: false },
         config
     );
     const cProp = config.children;
-    const cacheChildren: { [prop: string]: T[] } = {};
+    const cacheChildren: Map<string, {lastParentIndex: number, list: T[]}> = new Map();
+    let lastParentIndex = -1;
     const result: any[] = [];
     const cacheObj: { [prop: string]: T } = {};
     for (let item of data) {
@@ -192,17 +195,26 @@ export function listToTree<T = any>(
         cacheObj[id] = item;
         const parentId = item[config.parent];
         if (!parentId) {
-            result.push(item);
+            lastParentIndex = result.push(item) - 1;
         } else if (cacheObj[parentId]) {
             cacheObj[parentId][cProp].push(item);
         } else {
-            cacheChildren[parentId] ??= [];
-            cacheChildren[parentId].push(item);
+            if (!cacheChildren.has(parentId)) {
+                cacheChildren.set(parentId, {list: [], lastParentIndex: lastParentIndex});
+            }
+            cacheChildren.get(parentId).list.push(item);
         }
     }
-    Object.keys(cacheChildren).forEach(id => {
-        cacheObj[id] && cacheObj[id][cProp].unshift(...cacheChildren[id]);
-    });
+    const keys = Array.from(cacheChildren.keys());
+    for (let i = keys.length - 1; i >= 0; i--) {
+        const id = keys[i];
+        const node = cacheChildren.get(keys[i]);
+        if(cacheObj[id]){
+            cacheObj[id][cProp].unshift(...node.list)
+        } else if(config.applyNoneParent){
+            result.splice(node.lastParentIndex + 1, 0, ...node.list)
+        }
+    }
     return result;
 }
 

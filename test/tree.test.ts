@@ -147,6 +147,19 @@ const listTreeSmall: TestTreeNode[] = [
     { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' },
 ];
 
+const listTreeWithNoneParent: TestTreeNode[] = [
+    { Guid: '1', ParentGuid: null, Children: [], Label: 'node1' },
+    { Guid: '1-2', ParentGuid: '1', Children: [], Label: 'node1-1' },
+    { Guid: '33', ParentGuid: '32', Children: [], Label: 'node1-1' },
+    { Guid: '33-1', ParentGuid: '33', Children: [], Label: 'node1-1' },
+    { Guid: '2', ParentGuid: null, Children: [], Label: 'node1-2' },
+    { Guid: '2-1', ParentGuid: '2', Children: [], Label: 'node2-1' },
+    { Guid: '35', ParentGuid: '34', Children: [], Label: 'node1-1' },
+    { Guid: '35-1', ParentGuid: '35', Children: [], Label: 'node1-1' },
+    { Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1' },
+    { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' },
+];
+
 const treeDataSmall: TestTreeNode[] = [
     {
         Guid: '1',
@@ -179,6 +192,84 @@ const treeDataSmall: TestTreeNode[] = [
         Label: 'node1-2',
     },
 
+    {
+        Guid: '3',
+        hahah: 213,
+        ParentGuid: null,
+        Children: [
+            {
+                Guid: '3-1',
+                ParentGuid: '3',
+                hahah: 213,
+                Children: [],
+                Label: 'node3-1',
+            },
+        ],
+        Label: 'node3',
+    },
+];
+
+const treeDataSmallWithNoneParent: TestTreeNode[] = [
+    {
+        Guid: '1',
+        ParentGuid: null,
+        hahah: 213,
+        Children: [
+            {
+                Guid: '1-2',
+                ParentGuid: '1',
+                hahah: 213,
+                Children: [],
+                Label: 'node1-1',
+            },
+        ],
+        Label: 'node1',
+    },
+    {
+        Guid: '33',
+        ParentGuid: "32",
+        hahah: 213,
+        Children: [
+            {
+                Guid: '33-1',
+                ParentGuid: '33',
+                hahah: 213,
+                Children: [],
+                Label: 'node1-1',
+            },
+        ],
+        Label: 'node1-1',
+    },
+    {
+        Guid: '2',
+        hahah: 213,
+        ParentGuid: null,
+        Children: [
+            {
+                Guid: '2-1',
+                ParentGuid: '2',
+                hahah: 213,
+                Children: [],
+                Label: 'node2-1',
+            },
+        ],
+        Label: 'node1-2',
+    },
+    {
+        Guid: '35',
+        ParentGuid: "34",
+        hahah: 213,
+        Children: [
+            {
+                Guid: '35-1',
+                ParentGuid: '35',
+                hahah: 213,
+                Children: [],
+                Label: 'node1-1',
+            },
+        ],
+        Label: 'node1-1',
+    },
     {
         Guid: '3',
         hahah: 213,
@@ -266,6 +357,20 @@ test('test listToTree', () => {
             },
         })
     ).toEqual(treeDataSmall);
+});
+
+
+
+test('test listToTree applyNoneParent', () => {
+    expect(
+        listToTree(listTreeWithNoneParent, {
+            children: 'Children',
+            callBack: data => {
+                return { ...data, hahah: 213 };
+            },
+            applyNoneParent: true
+        })
+    ).toEqual(treeDataSmallWithNoneParent);
 });
 
 test('test _id', () => {
