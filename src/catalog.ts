@@ -1,5 +1,5 @@
 // 点数字 章节 括号 大写
-type INumSer = 'numPoint' | 'chapter' | 'bracket' | 'upper' | 'upper1';
+export type INumSer = 'numPoint' | 'chapter' | 'bracket' | 'upper' | 'upper1';
 
 export class Catalog {
     static distNum = [
@@ -27,42 +27,6 @@ export class Catalog {
 
     static numMap: { [prop: number]: string } = {};
 
-    /**
-     * 返回目录结构
-     * @param treeData
-     * @param childProp
-     * @param type  类型
-     * - upper1: 一、|（一）|1.|（1）
-     * - chapter: 第一章|一、|1.|（1）
-     * - bracket: （一）|1.|（1）|1.
-     * - upper: 一、|1.|（1）|1.
-     * @param deep
-     * @param location
-     */
-    static countSerial(
-        treeData: any[],
-        childProp: string = 'children',
-        type: INumSer = 'numPoint',
-        deep = 1,
-        location: number[] = []
-    ) {
-        if (!Array.isArray(treeData)) return;
-        let len = location.push(0);
-        treeData.forEach((item, index) => {
-            location[len - 1] = index + 1;
-            item.__seralNum__ = location.join('.');
-            item.__deep__ = len;
-            item.__seralTNnm__ = this.getTNum(item.__seralNum__, type);
-            this.countSerial(
-                item[childProp],
-                childProp,
-                type,
-                ++deep,
-                location
-            );
-        });
-        location.pop();
-    }
 
     /**
      * 返回目录结构
