@@ -389,7 +389,7 @@ test('test tree loop stop', () => {
         data => {
             ids.add(data.Guid);
         },
-        { whenStop: item => item.Guid === '2-1', childrenProp: 'Children' }
+        { whenStop: item => item.Guid === '1-2', childrenProp: 'Children' }
     );
-    expect(ids.size).toEqual(5);
+    expect(ids.size).toEqual(2);
 });

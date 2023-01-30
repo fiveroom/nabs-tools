@@ -271,12 +271,17 @@ export function treeHelper<T = any>(
                 switch (o.lookupWay) {
                     case LookupWay.前序遍历:
                         callback(item, context);
-                        stop = fun(
-                            item[o.childrenProp],
-                            item,
-                            deep + 1,
-                            zIndexArr
-                        );
+                        if(whenStop){
+                            stop = whenStop(item, context)
+                        }
+                        if(!stop){
+                            stop = fun(
+                                item[o.childrenProp],
+                                item,
+                                deep + 1,
+                                zIndexArr
+                            );
+                        }
                         break;
                     default:
                         stop = fun(
