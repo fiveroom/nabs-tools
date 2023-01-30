@@ -270,11 +270,11 @@ export function treeHelper<T = any>(
                 let stop;
                 switch (o.lookupWay) {
                     case LookupWay.前序遍历:
-                        callback(item, context);
                         if(whenStop){
                             stop = whenStop(item, context)
                         }
                         if(!stop){
+                            callback(item, context);
                             stop = fun(
                                 item[o.childrenProp],
                                 item,

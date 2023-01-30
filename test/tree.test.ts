@@ -391,5 +391,5 @@ test('test tree loop stop', () => {
         },
         { whenStop: item => item.Guid === '1-2', childrenProp: 'Children' }
     );
-    expect(ids.size).toEqual(2);
+    expect(ids.size).toEqual(1);
 });
