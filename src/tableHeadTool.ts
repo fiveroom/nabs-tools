@@ -24,7 +24,7 @@ export interface handleColSpanOption<T> {
  * @param headArr
  * @param param1
  * @param parent 父级元素
- * @param widthId {boolean} 是否为每一项生成唯一ID
+ * @param widthId {boolean}  是否为每一项生成唯一ID
  * @returns 总列数
  */
 export function handleColSpan<T extends tableHead>(
