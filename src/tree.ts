@@ -199,6 +199,10 @@ export interface TreeHelperCallback<T = any> {
             parent: T;
             deep: number;
             zIndexArr: number[];
+            brother: T[];
+            index: number;
+            last: boolean;
+            first: boolean;
         }
     ): void;
 }
@@ -266,7 +270,7 @@ export function treeHelper<T = any>(
             for (let i = 0; i < data.length; i++) {
                 const item = data[i];
                 zIndexArr.push(i);
-                const context = { parent, deep, zIndexArr: [...zIndexArr] };
+                const context = { parent, deep, zIndexArr: [...zIndexArr], brother: data, index: i, first: i === 0, last: i === data.length - 1 };
                 let stop;
                 switch (o.lookupWay) {
                     case LookupWay.前序遍历:
