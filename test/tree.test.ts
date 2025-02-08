@@ -393,3 +393,242 @@ test('test tree loop stop', () => {
     );
     expect(ids.size).toEqual(1);
 });
+
+it('should handle input with null values in the data array', () => {
+    const inputData = [
+        { Guid: '1', ParentGuid: null, Label: 'node1' },
+        null,
+        { Guid: '2', ParentGuid: '1', Label: 'node2' },
+        { Guid: '3', ParentGuid: '1', Label: 'node3' },
+        null,
+        { Guid: '4', ParentGuid: '2', Label: 'node4' }
+    ];
+
+    const expectedOutput = [
+        {
+            Guid: '1',
+            ParentGuid: null,
+            Label: 'node1',
+            children: [
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'node2',
+                    children: [
+                        {
+                            Guid: '4',
+                            ParentGuid: '2',
+                            Label: 'node4'
+                        }
+                    ]
+                },
+                {
+                    Guid: '3',
+                    ParentGuid: '1',
+                    Label: 'node3'
+                }
+            ]
+        }
+    ];
+
+    const result = listToTree(inputData);
+    expect(result).toEqual(expectedOutput);
+});
+it('should correctly process data with circular references', () => {
+    const circularData = [
+        { Guid: '1', ParentGuid: '2', Label: 'Node 1' },
+        { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
+        { Guid: '3', ParentGuid: null, Label: 'Root Node' }
+    ];
+
+    const result = listToTree(circularData, {applyNoneParent: true});
+
+    expect(result).toEqual([
+        {
+            Guid: '1',
+            ParentGuid: '2',
+            Label: 'Node 1',
+            children: [
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'Node 2',
+                    children: [
+
+                    ]
+                }
+            ]
+        },
+        {
+            Guid: '3',
+            ParentGuid: null,
+            Label: 'Root Node',
+            children: [
+
+            ]
+        }
+    ]);
+
+    // Check that circular reference is maintained
+    expect(result[0].children[0].children[0].ParentGuid).toBe('1');
+});
+it('should handle cases where the parent ID doesn\'t exist in the data', () => {
+    const inputData = [
+        { Guid: '1', ParentGuid: 'nonexistent', Label: 'Node 1' },
+        { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
+        { Guid: '3', ParentGuid: null, Label: 'Root Node' }
+    ];
+
+    const result = listToTree(inputData);
+
+    expect(result).toEqual([
+        {
+            Guid: '3',
+            ParentGuid: null,
+            Label: 'Root Node',
+            children: []
+        }
+    ]);
+
+    const resultWithApplyNoneParent = listToTree([
+        { Guid: '1', ParentGuid: 'nonexistent', Label: 'Node 1' },
+        { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
+        { Guid: '3', ParentGuid: null, Label: 'Root Node' }
+    ], { applyNoneParent: true });
+
+    expect(resultWithApplyNoneParent).toEqual([
+        {
+            Guid: '1',
+            ParentGuid: 'nonexistent',
+            Label: 'Node 1',
+            children: [
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'Node 2',
+                    children: []
+                }
+            ]
+        },
+        {
+            Guid: '3',
+            ParentGuid: null,
+            Label: 'Root Node',
+            children: []
+        }
+    ]);
+});
+test('should correctly process data with duplicate IDs', () => {
+    const inputData = [
+        { Guid: '1', ParentGuid: null, Label: 'Node 1' },
+        { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
+        { Guid: '3', ParentGuid: '1', Label: 'Node 3' },
+        { Guid: '2', ParentGuid: '1', Label: 'Duplicate Node 2' },
+        { Guid: '4', ParentGuid: '2', Label: 'Node 4' },
+    ];
+
+    const expectedOutput = [
+        {
+            Guid: '1',
+            ParentGuid: null,
+            Label: 'Node 1',
+            children: [
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'Node 2',
+                    children: [
+                        {
+                            Guid: '4',
+                            ParentGuid: '2',
+                            Label: 'Node 4',
+                            children: []
+                        },
+                    ],
+                },
+                {
+                    Guid: '3',
+                    ParentGuid: '1',
+                    Label: 'Node 3',
+                    children: []
+                },
+            ],
+        },
+    ];
+
+    const result = listToTree(inputData);
+    expect(result).toEqual(expectedOutput);
+});
+it('should handle cases where the children property already exists in the input data', () => {
+    const inputData = [
+        { Guid: '1', ParentGuid: null, Label: 'node1', children: ['existingChild'] },
+        { Guid: '2', ParentGuid: '1', Label: 'node2' },
+        { Guid: '3', ParentGuid: '1', Label: 'node3' }
+    ];
+
+    const expectedOutput = [
+        {
+            Guid: '1',
+            ParentGuid: null,
+            Label: 'node1',
+            children: [
+                'existingChild',
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'node2',
+                    children: []
+                },
+                {
+                    Guid: '3',
+                    ParentGuid: '1',
+                    Label: 'node3',
+                    children: []
+                }
+            ]
+        }
+    ];
+
+    const result = listToTree(inputData);
+    expect(result).toEqual(expectedOutput);
+});
+it('should handle cases where applyNoneParent is true but all nodes have parents', () => {
+    const inputData = [
+        { Guid: '1', ParentGuid: '0', Label: 'node1' },
+        { Guid: '2', ParentGuid: '1', Label: 'node2' },
+        { Guid: '3', ParentGuid: '1', Label: 'node3' },
+        { Guid: '4', ParentGuid: '2', Label: 'node4' }
+    ];
+
+    const result = listToTree(inputData, { applyNoneParent: true });
+
+    expect(result).toEqual([
+        {
+            Guid: '1',
+            ParentGuid: '0',
+            Label: 'node1',
+            children: [
+                {
+                    Guid: '2',
+                    ParentGuid: '1',
+                    Label: 'node2',
+                    children: [
+                        {
+                            Guid: '4',
+                            ParentGuid: '2',
+                            Label: 'node4',
+                            children: []
+                        }
+                    ]
+                },
+                {
+                    Guid: '3',
+                    ParentGuid: '1',
+                    Label: 'node3',
+                    children: []
+                }
+            ]
+        }
+    ]);
+    expect(result.length).toBe(1);
+});
