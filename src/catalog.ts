@@ -27,7 +27,6 @@ export class Catalog {
 
     static numMap: { [prop: number]: string } = {};
 
-
     /**
      * 返回目录结构
      * @param seralNum 1.1.1.1

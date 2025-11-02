@@ -2,7 +2,7 @@
 
 ### 多级表格头部
 
-计算头部的rowSpan和colSpan，
+计算头部的 rowSpan 和 colSpan，
 
 [测试地址](./test/tableHeadTool.test.ts)
 

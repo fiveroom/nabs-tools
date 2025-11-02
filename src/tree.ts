@@ -11,7 +11,7 @@ export function treeToMap<T extends Object>(
     data: T[],
     id: string,
     child: string = 'children'
-): { [prop: string]: T }{
+): { [prop: string]: T } {
     let r = {};
     let dealFunc = (d: Object[]) => {
         if (Array.isArray(d)) {
@@ -24,7 +24,6 @@ export function treeToMap<T extends Object>(
     dealFunc(data);
     return r;
 }
-
 
 interface getTreeNodeByIdOption {
     id?: string;
@@ -45,7 +44,7 @@ export function getTreeNodeById<T>(
 ): {
     zIndexArr: { d: T; i: number; b: T[] }[];
     data: T;
-}{
+} {
     let prop = {
         id: 'id',
         children: 'children',
@@ -84,7 +83,7 @@ export interface listToTreeOption<T> {
     id?: string;
     parent?: string;
     callBack?: (data: T) => any;
-    applyNoneParent?: boolean
+    applyNoneParent?: boolean;
 }
 
 /**
@@ -97,32 +96,32 @@ export interface listToTreeOption<T> {
 export function listToTree<T = any>(
     data: T[],
     config: listToTreeOption<T> = {}
-): any[]{
-    if (!data || data.length === 0) return []
-    const {children, callBack, parent, id, applyNoneParent} = Object.assign(
+): any[] {
+    if (!data || data.length === 0) return [];
+    const { children, callBack, parent, id, applyNoneParent } = Object.assign(
         {
             children: 'children',
             parent: 'ParentGuid',
             id: 'Guid',
-            applyNoneParent: false
+            applyNoneParent: false,
         },
         config
     );
     const result: any[] = [];
     const objMap: { [prop: string]: T } = {};
     const repetitionItem = new Set();
-    if(callBack) {
-        data = data.filter(Boolean).map(i => callBack(i) || i)
+    if (callBack) {
+        data = data.filter(Boolean).map(i => callBack(i) || i);
     }
     for (const node of data) {
         if (!node) continue;
-        const _id = node[id]
-        if(objMap[_id]) {
+        const _id = node[id];
+        if (objMap[_id]) {
             repetitionItem.add(node);
             continue;
         }
         objMap[_id] = node;
-        if(!node[children]) {
+        if (!node[children]) {
             node[children] = [];
         }
     }
@@ -135,7 +134,7 @@ export function listToTree<T = any>(
             continue;
         }
         if (!node[parent] || applyNoneParent) {
-            result.push(node)
+            result.push(node);
         }
     }
     return result;
@@ -154,7 +153,7 @@ export function treeSortDeep<T>(
     sortFun?: (a: T, b: T) => number,
     id: string = 'id',
     child: string = 'children'
-): T[]{
+): T[] {
     if (Array.isArray(data)) {
         data.forEach(i => {
             if (Array.isArray(i[child])) {
@@ -177,7 +176,7 @@ export function treeSortDeep<T>(
  * @param child
  * @returns
  */
-export function treeWidth<T>(data: T[], child: string = 'children'): number{
+export function treeWidth<T>(data: T[], child: string = 'children'): number {
     let l = 0;
     if (Array.isArray(data)) {
         data.forEach(i => {
@@ -242,7 +241,7 @@ export function treeHelper<T = any>(
     data: T[],
     callback: TreeHelperCallback<T>,
     treeHelperOption: TreeHelperOption<T> = 'children'
-): number{
+): number {
     if (typeof callback !== 'function') {
         throw TypeError('callback is not a function');
     }
@@ -273,13 +272,13 @@ export function treeHelper<T = any>(
                     brother: data,
                     index: i,
                     first: i === 0,
-                    last: i === data.length - 1
+                    last: i === data.length - 1,
                 };
                 let stop;
                 switch (o.lookupWay) {
                     case LookupWay.前序遍历:
                         if (whenStop) {
-                            stop = whenStop(item, context)
+                            stop = whenStop(item, context);
                         }
                         if (!stop) {
                             callback(item, context);

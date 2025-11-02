@@ -3,7 +3,7 @@ import {
     listToTree,
     LookupWay,
     treeHelper,
-    treeToMap
+    treeToMap,
 } from '../src/tree';
 import { tableHead, handleColSpan } from '../src/tableHeadTool';
 
@@ -15,30 +15,30 @@ let treeData_01: tableHead[] = [
             {
                 name: 'name3',
                 children: [{ name: 'name4', children: [], id: 'id4' }],
-                id: 'id2'
-            }
+                id: 'id2',
+            },
         ],
-        id: 'id1'
+        id: 'id1',
     },
     {
         name: 'name444',
         children: [
             {
-                name: 'name555'
+                name: 'name555',
             },
             {
                 name: 'name666',
                 children: [
                     {
-                        name: '4444'
+                        name: '4444',
                     },
                     {
-                        name: '888'
-                    }
-                ]
-            }
-        ]
-    }
+                        name: '888',
+                    },
+                ],
+            },
+        ],
+    },
 ];
 
 it('should get four elements', () => {
@@ -49,7 +49,7 @@ it('should get four elements', () => {
     expect(treeMap).toEqual(
         expect.objectContaining({
             id4: { name: 'name4', children: [], id: 'id4' },
-            id3: { name: 'name2', children: [], id: 'id3' }
+            id3: { name: 'name2', children: [], id: 'id3' },
         })
     );
 });
@@ -61,11 +61,11 @@ test('get node from tree by id', () => {
 
     expect(getTreeNodeById('id7', treeData_01)).toEqual({
         zIndexArr: [],
-        data: null
+        data: null,
     });
 });
 
-test('node name3\'s deep is 1', () => {
+test("node name3's deep is 1", () => {
     treeHelper(treeData_01, (node, { deep, zIndexArr }) => {
         node.deep = deep;
         node.zIndexArr = zIndexArr;
@@ -106,7 +106,7 @@ test('后序遍历', () => {
         '4444',
         '888',
         'name666',
-        'name444'
+        'name444',
     ]);
 });
 
@@ -131,11 +131,11 @@ const listTree: TestTreeNode[] = [
         Guid: '2-2-3-1',
         ParentGuid: '2-2-3',
         Children: [],
-        Label: 'node2-2-3-1'
+        Label: 'node2-2-3-1',
     },
     { Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1' },
     { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' },
-    { Guid: '3-2', ParentGuid: '3', Children: [], Label: 'node3-2' }
+    { Guid: '3-2', ParentGuid: '3', Children: [], Label: 'node3-2' },
 ];
 
 const listTreeSmall: TestTreeNode[] = [
@@ -144,7 +144,7 @@ const listTreeSmall: TestTreeNode[] = [
     { Guid: '2', ParentGuid: null, Children: [], Label: 'node1-2' },
     { Guid: '2-1', ParentGuid: '2', Children: [], Label: 'node2-1' },
     { Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1' },
-    { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' }
+    { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' },
 ];
 
 const listTreeWithNoneParent: TestTreeNode[] = [
@@ -157,7 +157,7 @@ const listTreeWithNoneParent: TestTreeNode[] = [
     { Guid: '35', ParentGuid: '34', Children: [], Label: 'node1-1' },
     { Guid: '35-1', ParentGuid: '35', Children: [], Label: 'node1-1' },
     { Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1' },
-    { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' }
+    { Guid: '3', ParentGuid: null, Children: [], Label: 'node3' },
 ];
 
 const treeDataSmall: TestTreeNode[] = [
@@ -171,10 +171,10 @@ const treeDataSmall: TestTreeNode[] = [
                 ParentGuid: '1',
                 hahah: 213,
                 Children: [],
-                Label: 'node1-1'
-            }
+                Label: 'node1-1',
+            },
         ],
-        Label: 'node1'
+        Label: 'node1',
     },
     {
         Guid: '2',
@@ -186,10 +186,10 @@ const treeDataSmall: TestTreeNode[] = [
                 ParentGuid: '2',
                 hahah: 213,
                 Children: [],
-                Label: 'node2-1'
-            }
+                Label: 'node2-1',
+            },
         ],
-        Label: 'node1-2'
+        Label: 'node1-2',
     },
 
     {
@@ -202,11 +202,11 @@ const treeDataSmall: TestTreeNode[] = [
                 ParentGuid: '3',
                 hahah: 213,
                 Children: [],
-                Label: 'node3-1'
-            }
+                Label: 'node3-1',
+            },
         ],
-        Label: 'node3'
-    }
+        Label: 'node3',
+    },
 ];
 
 const treeDataSmallWithNoneParent: TestTreeNode[] = [
@@ -220,10 +220,10 @@ const treeDataSmallWithNoneParent: TestTreeNode[] = [
                 ParentGuid: '1',
                 hahah: 213,
                 Children: [],
-                Label: 'node1-1'
-            }
+                Label: 'node1-1',
+            },
         ],
-        Label: 'node1'
+        Label: 'node1',
     },
     {
         Guid: '33',
@@ -235,10 +235,10 @@ const treeDataSmallWithNoneParent: TestTreeNode[] = [
                 ParentGuid: '33',
                 hahah: 213,
                 Children: [],
-                Label: 'node1-1'
-            }
+                Label: 'node1-1',
+            },
         ],
-        Label: 'node1-1'
+        Label: 'node1-1',
     },
     {
         Guid: '2',
@@ -250,10 +250,10 @@ const treeDataSmallWithNoneParent: TestTreeNode[] = [
                 ParentGuid: '2',
                 hahah: 213,
                 Children: [],
-                Label: 'node2-1'
-            }
+                Label: 'node2-1',
+            },
         ],
-        Label: 'node1-2'
+        Label: 'node1-2',
     },
     {
         Guid: '35',
@@ -265,10 +265,10 @@ const treeDataSmallWithNoneParent: TestTreeNode[] = [
                 ParentGuid: '35',
                 hahah: 213,
                 Children: [],
-                Label: 'node1-1'
-            }
+                Label: 'node1-1',
+            },
         ],
-        Label: 'node1-1'
+        Label: 'node1-1',
     },
     {
         Guid: '3',
@@ -280,11 +280,11 @@ const treeDataSmallWithNoneParent: TestTreeNode[] = [
                 ParentGuid: '3',
                 hahah: 213,
                 Children: [],
-                Label: 'node3-1'
-            }
+                Label: 'node3-1',
+            },
         ],
-        Label: 'node3'
-    }
+        Label: 'node3',
+    },
 ];
 
 const treeData: TestTreeNode[] = [
@@ -300,13 +300,13 @@ const treeData: TestTreeNode[] = [
                         Guid: '1-2-1',
                         ParentGuid: '1-2',
                         Children: [],
-                        Label: 'node1-2-1'
-                    }
+                        Label: 'node1-2-1',
+                    },
                 ],
-                Label: 'node1-1'
-            }
+                Label: 'node1-1',
+            },
         ],
-        Label: 'node1'
+        Label: 'node1',
     },
     {
         Guid: '2',
@@ -325,16 +325,16 @@ const treeData: TestTreeNode[] = [
                                 Guid: '2-2-3-1',
                                 ParentGuid: '2-2-3',
                                 Children: [],
-                                Label: 'node2-2-3-1'
-                            }
+                                Label: 'node2-2-3-1',
+                            },
                         ],
-                        Label: 'node2-2-3'
-                    }
+                        Label: 'node2-2-3',
+                    },
                 ],
-                Label: 'node2-2'
-            }
+                Label: 'node2-2',
+            },
         ],
-        Label: 'node1-2'
+        Label: 'node1-2',
     },
 
     {
@@ -342,10 +342,10 @@ const treeData: TestTreeNode[] = [
         ParentGuid: null,
         Children: [
             { Guid: '3-1', ParentGuid: '3', Children: [], Label: 'node3-1' },
-            { Guid: '3-2', ParentGuid: '3', Children: [], Label: 'node3-2' }
+            { Guid: '3-2', ParentGuid: '3', Children: [], Label: 'node3-2' },
         ],
-        Label: 'node3'
-    }
+        Label: 'node3',
+    },
 ];
 
 test('test listToTree', () => {
@@ -354,11 +354,10 @@ test('test listToTree', () => {
             children: 'Children',
             callBack: data => {
                 return { ...data, hahah: 213 };
-            }
+            },
         })
     ).toEqual(treeDataSmall);
 });
-
 
 test('test listToTree applyNoneParent', () => {
     expect(
@@ -367,7 +366,7 @@ test('test listToTree applyNoneParent', () => {
             callBack: data => {
                 return { ...data, hahah: 213 };
             },
-            applyNoneParent: true
+            applyNoneParent: true,
         })
     ).toEqual(treeDataSmallWithNoneParent);
 });
@@ -400,7 +399,7 @@ it('should handle input with null values in the data array', () => {
         { Guid: '2', ParentGuid: '1', Label: 'node2' },
         { Guid: '3', ParentGuid: '1', Label: 'node3' },
         null,
-        { Guid: '4', ParentGuid: '2', Label: 'node4' }
+        { Guid: '4', ParentGuid: '2', Label: 'node4' },
     ];
 
     const expectedOutput = [
@@ -417,28 +416,28 @@ it('should handle input with null values in the data array', () => {
                         {
                             Guid: '4',
                             ParentGuid: '2',
-                            Label: 'node4'
-                        }
-                    ]
+                            Label: 'node4',
+                        },
+                    ],
                 },
                 {
                     Guid: '3',
                     ParentGuid: '1',
-                    Label: 'node3'
-                }
-            ]
-        }
+                    Label: 'node3',
+                },
+            ],
+        },
     ];
 
     const result = listToTree(inputData);
     expect(result).toEqual(expectedOutput);
 });
 
-it('should handle cases where the parent ID doesn\'t exist in the data', () => {
+it("should handle cases where the parent ID doesn't exist in the data", () => {
     const inputData = [
         { Guid: '1', ParentGuid: 'nonexistent', Label: 'Node 1' },
         { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
-        { Guid: '3', ParentGuid: null, Label: 'Root Node' }
+        { Guid: '3', ParentGuid: null, Label: 'Root Node' },
     ];
 
     const result = listToTree(inputData);
@@ -448,15 +447,18 @@ it('should handle cases where the parent ID doesn\'t exist in the data', () => {
             Guid: '3',
             ParentGuid: null,
             Label: 'Root Node',
-            children: []
-        }
+            children: [],
+        },
     ]);
 
-    const resultWithApplyNoneParent = listToTree([
-        { Guid: '1', ParentGuid: 'nonexistent', Label: 'Node 1' },
-        { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
-        { Guid: '3', ParentGuid: null, Label: 'Root Node' }
-    ], { applyNoneParent: true });
+    const resultWithApplyNoneParent = listToTree(
+        [
+            { Guid: '1', ParentGuid: 'nonexistent', Label: 'Node 1' },
+            { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
+            { Guid: '3', ParentGuid: null, Label: 'Root Node' },
+        ],
+        { applyNoneParent: true }
+    );
 
     expect(resultWithApplyNoneParent).toEqual([
         {
@@ -468,16 +470,16 @@ it('should handle cases where the parent ID doesn\'t exist in the data', () => {
                     Guid: '2',
                     ParentGuid: '1',
                     Label: 'Node 2',
-                    children: []
-                }
-            ]
+                    children: [],
+                },
+            ],
         },
         {
             Guid: '3',
             ParentGuid: null,
             Label: 'Root Node',
-            children: []
-        }
+            children: [],
+        },
     ]);
 });
 test('should correctly process data with duplicate IDs', () => {
@@ -486,7 +488,7 @@ test('should correctly process data with duplicate IDs', () => {
         { Guid: '2', ParentGuid: '1', Label: 'Node 2' },
         { Guid: '3', ParentGuid: '1', Label: 'Node 3' },
         { Guid: '2', ParentGuid: '1', Label: 'Duplicate Node 2' },
-        { Guid: '4', ParentGuid: '2', Label: 'Node 4' }
+        { Guid: '4', ParentGuid: '2', Label: 'Node 4' },
     ];
 
     const expectedOutput = [
@@ -504,18 +506,18 @@ test('should correctly process data with duplicate IDs', () => {
                             Guid: '4',
                             ParentGuid: '2',
                             Label: 'Node 4',
-                            children: []
-                        }
-                    ]
+                            children: [],
+                        },
+                    ],
                 },
                 {
                     Guid: '3',
                     ParentGuid: '1',
                     Label: 'Node 3',
-                    children: []
-                }
-            ]
-        }
+                    children: [],
+                },
+            ],
+        },
     ];
 
     const result = listToTree(inputData);
@@ -523,9 +525,14 @@ test('should correctly process data with duplicate IDs', () => {
 });
 it('should handle cases where the children property already exists in the input data', () => {
     const inputData = [
-        { Guid: '1', ParentGuid: null, Label: 'node1', children: ['existingChild'] },
+        {
+            Guid: '1',
+            ParentGuid: null,
+            Label: 'node1',
+            children: ['existingChild'],
+        },
         { Guid: '2', ParentGuid: '1', Label: 'node2' },
-        { Guid: '3', ParentGuid: '1', Label: 'node3' }
+        { Guid: '3', ParentGuid: '1', Label: 'node3' },
     ];
 
     const expectedOutput = [
@@ -539,16 +546,16 @@ it('should handle cases where the children property already exists in the input 
                     Guid: '2',
                     ParentGuid: '1',
                     Label: 'node2',
-                    children: []
+                    children: [],
                 },
                 {
                     Guid: '3',
                     ParentGuid: '1',
                     Label: 'node3',
-                    children: []
-                }
-            ]
-        }
+                    children: [],
+                },
+            ],
+        },
     ];
 
     const result = listToTree(inputData);
@@ -559,7 +566,7 @@ it('should handle cases where applyNoneParent is true but all nodes have parents
         { Guid: '1', ParentGuid: '0', Label: 'node1' },
         { Guid: '2', ParentGuid: '1', Label: 'node2' },
         { Guid: '3', ParentGuid: '1', Label: 'node3' },
-        { Guid: '4', ParentGuid: '2', Label: 'node4' }
+        { Guid: '4', ParentGuid: '2', Label: 'node4' },
     ];
 
     const result = listToTree(inputData, { applyNoneParent: true });
@@ -579,18 +586,18 @@ it('should handle cases where applyNoneParent is true but all nodes have parents
                             Guid: '4',
                             ParentGuid: '2',
                             Label: 'node4',
-                            children: []
-                        }
-                    ]
+                            children: [],
+                        },
+                    ],
                 },
                 {
                     Guid: '3',
                     ParentGuid: '1',
                     Label: 'node3',
-                    children: []
-                }
-            ]
-        }
+                    children: [],
+                },
+            ],
+        },
     ]);
     expect(result.length).toBe(1);
 });
@@ -600,15 +607,16 @@ it('callback 修改父子id', () => {
         { Guid: '1', ParentGuid: '0', Label: 'node1' },
         { Guid: '2', ParentGuid: '1', Label: 'node2' },
         { Guid: '3', ParentGuid: '1', Label: 'node3' },
-        { Guid: '4', ParentGuid: '2', Label: 'node4' }
+        { Guid: '4', ParentGuid: '2', Label: 'node4' },
     ];
 
     const result = listToTree(inputData, {
-        applyNoneParent: true, callBack: node => {
-            return {id: node.Guid, pId: node.ParentGuid};
+        applyNoneParent: true,
+        callBack: node => {
+            return { id: node.Guid, pId: node.ParentGuid };
         },
         parent: 'pId',
-        id: 'id'
+        id: 'id',
     });
 
     expect(result).toEqual([
@@ -623,17 +631,17 @@ it('callback 修改父子id', () => {
                         {
                             id: '4',
                             pId: '2',
-                            children: []
-                        }
-                    ]
+                            children: [],
+                        },
+                    ],
                 },
                 {
                     id: '3',
                     pId: '1',
-                    children: []
-                }
-            ]
-        }
+                    children: [],
+                },
+            ],
+        },
     ]);
     expect(result.length).toBe(1);
 });
