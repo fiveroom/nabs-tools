@@ -111,9 +111,11 @@ export function listToTree<T = any>(
     const result: any[] = [];
     const objMap: { [prop: string]: T } = {};
     const repetitionItem = new Set();
-    for (const item of data) {
-        if (!item) continue;
-        const node = callBack ? callBack(item) : item;
+    if(callBack) {
+        data = data.filter(Boolean).map(i => callBack(i) || i)
+    }
+    for (const node of data) {
+        if (!node) continue;
         const _id = node[id]
         if(objMap[_id]) {
             repetitionItem.add(node);
